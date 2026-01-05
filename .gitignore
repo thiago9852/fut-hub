@@ -1,0 +1,37 @@
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/config/reference.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+.phpunit.cache/
+###< symfony/phpunit-bridge ###
+
+###> docker ###
+docker-compose.override.yml
+###< docker ###
+
+.idea/
+.vscode/
+.claude/
+Thumbs.db
+
+# uploads de usuário — a pasta fica versionada (.gitkeep), o conteúdo não
+/public/uploads/*
+!/public/uploads/*/.gitkeep
+!/public/uploads/soccer-ball-png.webp
+!/public/uploads/teams/
+!/public/uploads/teams/**
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###
