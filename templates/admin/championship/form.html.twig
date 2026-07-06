@@ -1,0 +1,22 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ championship.id ? 'Editar' : 'Novo' }} campeonato — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<h1>{{ championship.id ? 'Editar campeonato' : 'Novo campeonato' }}</h1>
+<div class="card">
+    {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.slug) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.format) }}
+        {{ form_row(form.status) }}
+        {{ form_row(form.startDate) }}
+        {{ form_row(form.endDate) }}
+        <div class="form-actions">
+            <button type="submit" class="btn">Salvar</button>
+            <a href="{{ path('admin_championship_index') }}" class="btn secondary">Cancelar</a>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

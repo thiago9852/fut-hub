@@ -1,0 +1,45 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Jogos — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<div class="toolbar">
+    <h1 style="margin:0;">Jogos</h1>
+    <a href="{{ path('admin_match_new') }}" class="btn">+ Novo jogo</a>
+</div>
+
+{% if matches is empty %}
+    <div class="empty">Nenhum jogo cadastrado ainda.</div>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>Rodada</th>
+                <th>Partida</th>
+                <th>Placar</th>
+                <th>Data</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for match in matches %}
+                <tr>
+                    <td>{{ match.round.name ?? ('Rodada ' ~ match.round.number) }}</td>
+                    <td>{{ match.homeTeam.name }} × {{ match.awayTeam.name }}</td>
+                    <td>{{ match.homeScore ?? '—' }} : {{ match.awayScore ?? '—' }}</td>
+                    <td>{{ match.scheduledAt ? match.scheduledAt|date('d/m/Y H:i') : '—' }}</td>
+                    <td><span class="badge">{{ match.status.value }}</span></td>
+                    <td class="actions">
+                        <a href="{{ path('admin_match_edit', {id: match.id}) }}">Editar</a>
+                        <form method="post" action="{{ path('admin_match_delete', {id: match.id}) }}" style="display:inline" onsubmit="return confirm('Remover este jogo?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-match-' ~ match.id) }}">
+                            <button type="submit" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:.85rem;padding:0;margin-left:.75rem;">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock %}

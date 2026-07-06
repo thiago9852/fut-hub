@@ -1,0 +1,45 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Elencos — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<div class="toolbar">
+    <h1 style="margin:0;">Elencos</h1>
+    <a href="{{ path('admin_team_player_new') }}" class="btn">+ Adicionar ao elenco</a>
+</div>
+
+{% if teamPlayers is empty %}
+    <div class="empty">Nenhum jogador vinculado a um time ainda.</div>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Jogador</th>
+                <th>Temporada</th>
+                <th>Camisa</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for teamPlayer in teamPlayers %}
+                <tr>
+                    <td>{{ teamPlayer.team.name }}</td>
+                    <td>{{ teamPlayer.player.name }}</td>
+                    <td>{{ teamPlayer.season.name }}</td>
+                    <td>{{ teamPlayer.shirtNumber ?? '—' }}</td>
+                    <td><span class="badge">{{ teamPlayer.status }}</span></td>
+                    <td class="actions">
+                        <a href="{{ path('admin_team_player_edit', {id: teamPlayer.id}) }}">Editar</a>
+                        <form method="post" action="{{ path('admin_team_player_delete', {id: teamPlayer.id}) }}" style="display:inline" onsubmit="return confirm('Remover do elenco?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-team-player-' ~ teamPlayer.id) }}">
+                            <button type="submit" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:.85rem;padding:0;margin-left:.75rem;">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock %}

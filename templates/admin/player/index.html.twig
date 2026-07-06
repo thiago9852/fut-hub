@@ -1,0 +1,41 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Jogadores — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<div class="toolbar">
+    <h1 style="margin:0;">Jogadores</h1>
+    <a href="{{ path('admin_player_new') }}" class="btn">+ Novo jogador</a>
+</div>
+
+{% if players is empty %}
+    <div class="empty">Nenhum jogador cadastrado ainda.</div>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Posição</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in players %}
+                <tr>
+                    <td>{{ player.name }}</td>
+                    <td>{{ player.position ?? '—' }}</td>
+                    <td><span class="badge">{{ player.status }}</span></td>
+                    <td class="actions">
+                        <a href="{{ path('admin_player_edit', {id: player.id}) }}">Editar</a>
+                        <form method="post" action="{{ path('admin_player_delete', {id: player.id}) }}" style="display:inline" onsubmit="return confirm('Remover este jogador?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-player-' ~ player.id) }}">
+                            <button type="submit" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:.85rem;padding:0;margin-left:.75rem;">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Rodadas — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<div class="toolbar">
+    <h1 style="margin:0;">Rodadas</h1>
+    <a href="{{ path('admin_round_new') }}" class="btn">+ Nova rodada</a>
+</div>
+
+{% if rounds is empty %}
+    <div class="empty">Nenhuma rodada cadastrada ainda.</div>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>Temporada</th>
+                <th>Número</th>
+                <th>Nome</th>
+                <th>Data</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for round in rounds %}
+                <tr>
+                    <td>{{ round.season.championship.name }} — {{ round.season.name }}</td>
+                    <td>{{ round.number }}</td>
+                    <td>{{ round.name ?? '—' }}</td>
+                    <td>{{ round.scheduledDate ? round.scheduledDate|date('d/m/Y') : '—' }}</td>
+                    <td class="actions">
+                        <a href="{{ path('admin_round_edit', {id: round.id}) }}">Editar</a>
+                        <form method="post" action="{{ path('admin_round_delete', {id: round.id}) }}" style="display:inline" onsubmit="return confirm('Remover esta rodada?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-round-' ~ round.id) }}">
+                            <button type="submit" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:.85rem;padding:0;margin-left:.75rem;">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock %}

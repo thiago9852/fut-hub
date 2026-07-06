@@ -1,0 +1,23 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ lineup.id ? 'Editar' : 'Nova' }} escalação — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<h1>{{ lineup.id ? 'Editar escalação' : 'Nova escalação' }}</h1>
+<div class="card">
+    {{ form_start(form) }}
+        {{ form_row(form.match) }}
+        {{ form_row(form.team) }}
+        {{ form_row(form.player) }}
+        {{ form_row(form.starter) }}
+        {{ form_row(form.position) }}
+        {{ form_row(form.shirtNumber) }}
+        {{ form_row(form.enteredAt) }}
+        {{ form_row(form.leftAt) }}
+        <div class="form-actions">
+            <button type="submit" class="btn">Salvar</button>
+            <a href="{{ path('admin_match_lineup_index') }}" class="btn secondary">Cancelar</a>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

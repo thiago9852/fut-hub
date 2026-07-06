@@ -1,0 +1,45 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Usuários — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<div class="toolbar">
+    <h1 style="margin:0;">Usuários</h1>
+    <a href="{{ path('admin_user_new') }}" class="btn">+ Novo usuário</a>
+</div>
+
+{% if users is empty %}
+    <div class="empty">Nenhum usuário cadastrado ainda.</div>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Perfil</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in users %}
+                <tr>
+                    <td>{{ u.name }}{% if u == app.user %} <span class="meta" style="color: var(--muted); font-size:.8rem;">(você)</span>{% endif %}</td>
+                    <td>{{ u.email }}</td>
+                    <td><span class="badge">{{ u.roles[0]|default('ROLE_VIEWER') }}</span></td>
+                    <td>{{ u.status }}</td>
+                    <td class="actions">
+                        <a href="{{ path('admin_user_edit', {id: u.id}) }}">Editar</a>
+                        {% if u != app.user %}
+                            <form method="post" action="{{ path('admin_user_delete', {id: u.id}) }}" style="display:inline" onsubmit="return confirm('Remover este usuário?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete-user-' ~ u.id) }}">
+                                <button type="submit" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:.85rem;padding:0;margin-left:.75rem;">Excluir</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock %}

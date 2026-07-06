@@ -1,0 +1,19 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ round.id ? 'Editar' : 'Nova' }} rodada — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<h1>{{ round.id ? 'Editar rodada' : 'Nova rodada' }}</h1>
+<div class="card">
+    {{ form_start(form) }}
+        {{ form_row(form.season) }}
+        {{ form_row(form.number) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.scheduledDate) }}
+        <div class="form-actions">
+            <button type="submit" class="btn">Salvar</button>
+            <a href="{{ path('admin_round_index') }}" class="btn secondary">Cancelar</a>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

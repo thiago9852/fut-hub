@@ -1,0 +1,45 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Escalações — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<div class="toolbar">
+    <h1 style="margin:0;">Escalações</h1>
+    <a href="{{ path('admin_match_lineup_new') }}" class="btn">+ Nova escalação</a>
+</div>
+
+{% if lineups is empty %}
+    <div class="empty">Nenhuma escalação registrada ainda.</div>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>Jogo</th>
+                <th>Time</th>
+                <th>Jogador</th>
+                <th>Titular</th>
+                <th>Posição</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lineup in lineups %}
+                <tr>
+                    <td>{{ lineup.match.homeTeam.name }} × {{ lineup.match.awayTeam.name }}</td>
+                    <td>{{ lineup.team.name }}</td>
+                    <td>{{ lineup.player.name }}</td>
+                    <td>{{ lineup.starter ? 'Sim' : 'Não' }}</td>
+                    <td>{{ lineup.position ?? '—' }}</td>
+                    <td class="actions">
+                        <a href="{{ path('admin_match_lineup_edit', {id: lineup.id}) }}">Editar</a>
+                        <form method="post" action="{{ path('admin_match_lineup_delete', {id: lineup.id}) }}" style="display:inline" onsubmit="return confirm('Remover esta escalação?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-match-lineup-' ~ lineup.id) }}">
+                            <button type="submit" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:.85rem;padding:0;margin-left:.75rem;">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock %}

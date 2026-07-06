@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login — Futebol Local{% endblock %}
+
+{% block stylesheets %}
+<style>
+    :root {
+        --bg: #101110;
+        --surface: #171917;
+        --line: #2a2e2a;
+        --muted: #a4aaa1;
+        --text: #f0f2ec;
+        --accent: #c5f05c;
+        --danger: #ff6b6b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        display: flex;
+        min-height: 100vh;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 360px;
+    }
+
+    h1 { margin: 0 0 1.5rem; font-size: 1.4rem; }
+    h1 span { color: var(--accent); }
+
+    label {
+        display: block;
+        font-size: .85rem;
+        color: var(--muted);
+        margin-bottom: .35rem;
+    }
+
+    input {
+        width: 100%;
+        padding: .6rem .75rem;
+        margin-bottom: 1rem;
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--text);
+        font-size: .95rem;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: var(--accent);
+    }
+
+    button {
+        width: 100%;
+        padding: .7rem;
+        background: var(--accent);
+        color: #101110;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .error {
+        background: rgba(255, 107, 107, .1);
+        border: 1px solid var(--danger);
+        color: var(--danger);
+        padding: .6rem .75rem;
+        border-radius: 8px;
+        font-size: .85rem;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="card">
+    <h1>Futebol <span>Local</span></h1>
+
+    {% if error %}
+        <div class="error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    <form method="post">
+        <label for="username">E-mail</label>
+        <input type="email" value="{{ last_username }}" name="_username" id="username" required autofocus>
+
+        <label for="password">Senha</label>
+        <input type="password" name="_password" id="password" required>
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <button type="submit">Entrar</button>
+    </form>
+</div>
+{% endblock %}

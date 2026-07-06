@@ -1,0 +1,31 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ team.id ? 'Editar' : 'Novo' }} time — Futebol Local{% endblock %}
+
+{% block extra_stylesheets %}
+    .logo-preview { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; background: var(--bg); border: 1px solid var(--line); margin-bottom: 1rem; }
+    .form-help { color: var(--muted); font-size: .78rem; margin-top: -.75rem; margin-bottom: 1rem; }
+{% endblock %}
+
+{% block admin_body %}
+<h1>{{ team.id ? 'Editar time' : 'Novo time' }}</h1>
+<div class="card">
+    {% if team.logo %}
+        <img src="{{ team.logo }}" alt="Logo atual" class="logo-preview">
+    {% endif %}
+    {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.shortName) }}
+        {{ form_row(form.slug) }}
+        {{ form_row(form.city) }}
+        {{ form_row(form.foundedAt) }}
+        {{ form_row(form.status) }}
+        {{ form_row(form.logo) }}
+        {{ form_row(form.logoFile) }}
+        <div class="form-actions">
+            <button type="submit" class="btn">Salvar</button>
+            <a href="{{ path('admin_team_index') }}" class="btn secondary">Cancelar</a>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

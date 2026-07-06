@@ -1,0 +1,24 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ match.id ? 'Editar' : 'Novo' }} jogo — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<h1>{{ match.id ? 'Editar jogo' : 'Novo jogo' }}</h1>
+<div class="card">
+    {{ form_start(form) }}
+        {{ form_row(form.season) }}
+        {{ form_row(form.round) }}
+        {{ form_row(form.homeTeam) }}
+        {{ form_row(form.awayTeam) }}
+        {{ form_row(form.stadium) }}
+        {{ form_row(form.scheduledAt) }}
+        {{ form_row(form.homeScore) }}
+        {{ form_row(form.awayScore) }}
+        {{ form_row(form.status) }}
+        <div class="form-actions">
+            <button type="submit" class="btn">Salvar</button>
+            <a href="{{ path('admin_match_index') }}" class="btn secondary">Cancelar</a>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

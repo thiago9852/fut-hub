@@ -1,0 +1,22 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ teamPlayer.id ? 'Editar' : 'Novo' }} elenco — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<h1>{{ teamPlayer.id ? 'Editar vínculo' : 'Adicionar ao elenco' }}</h1>
+<div class="card">
+    {{ form_start(form) }}
+        {{ form_row(form.team) }}
+        {{ form_row(form.player) }}
+        {{ form_row(form.season) }}
+        {{ form_row(form.shirtNumber) }}
+        {{ form_row(form.startedAt) }}
+        {{ form_row(form.endedAt) }}
+        {{ form_row(form.status) }}
+        <div class="form-actions">
+            <button type="submit" class="btn">Salvar</button>
+            <a href="{{ path('admin_team_player_index') }}" class="btn secondary">Cancelar</a>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ stadium.id ? 'Editar' : 'Novo' }} estádio — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<h1>{{ stadium.id ? 'Editar estádio' : 'Novo estádio' }}</h1>
+<div class="card">
+    {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.address) }}
+        {{ form_row(form.city) }}
+        {{ form_row(form.latitude) }}
+        {{ form_row(form.longitude) }}
+        {{ form_row(form.capacity) }}
+        <div class="form-actions">
+            <button type="submit" class="btn">Salvar</button>
+            <a href="{{ path('admin_stadium_index') }}" class="btn secondary">Cancelar</a>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

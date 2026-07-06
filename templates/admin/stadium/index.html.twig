@@ -1,0 +1,41 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Estádios — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<div class="toolbar">
+    <h1 style="margin:0;">Estádios</h1>
+    <a href="{{ path('admin_stadium_new') }}" class="btn">+ Novo estádio</a>
+</div>
+
+{% if stadiums is empty %}
+    <div class="empty">Nenhum estádio cadastrado ainda.</div>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Cidade</th>
+                <th>Capacidade</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stadium in stadiums %}
+                <tr>
+                    <td>{{ stadium.name }}</td>
+                    <td>{{ stadium.city ?? '—' }}</td>
+                    <td>{{ stadium.capacity ?? '—' }}</td>
+                    <td class="actions">
+                        <a href="{{ path('admin_stadium_edit', {id: stadium.id}) }}">Editar</a>
+                        <form method="post" action="{{ path('admin_stadium_delete', {id: stadium.id}) }}" style="display:inline" onsubmit="return confirm('Remover este estádio?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-stadium-' ~ stadium.id) }}">
+                            <button type="submit" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:.85rem;padding:0;margin-left:.75rem;">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock %}

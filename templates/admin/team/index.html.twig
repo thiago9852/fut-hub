@@ -1,0 +1,47 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Times — Futebol Local{% endblock %}
+
+{% block extra_stylesheets %}
+    .team-logo { width: 28px; height: 28px; border-radius: 6px; object-fit: cover; vertical-align: middle; margin-right: .5rem; background: var(--bg); border: 1px solid var(--line); }
+{% endblock %}
+
+{% block admin_body %}
+<div class="toolbar">
+    <h1 style="margin:0;">Times</h1>
+    <a href="{{ path('admin_team_new') }}" class="btn">+ Novo time</a>
+</div>
+
+{% if teams is empty %}
+    <div class="empty">Nenhum time cadastrado ainda.</div>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Sigla</th>
+                <th>Cidade</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for team in teams %}
+                <tr>
+                    <td>{% if team.logo %}<img src="{{ team.logo }}" class="team-logo" alt="">{% endif %}{{ team.name }}</td>
+                    <td>{{ team.shortName ?? '—' }}</td>
+                    <td>{{ team.city ?? '—' }}</td>
+                    <td><span class="badge">{{ team.status }}</span></td>
+                    <td class="actions">
+                        <a href="{{ path('admin_team_edit', {id: team.id}) }}">Editar</a>
+                        <form method="post" action="{{ path('admin_team_delete', {id: team.id}) }}" style="display:inline" onsubmit="return confirm('Remover este time?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-team-' ~ team.id) }}">
+                            <button type="submit" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:.85rem;padding:0;margin-left:.75rem;">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,174 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Dashboard — Futebol Local{% endblock %}
+
+{% block extra_stylesheets %}
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 1.25rem; text-align: center; }
+    .kpi strong { display: block; font-size: 1.8rem; color: var(--accent); }
+    .kpi span { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; }
+    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+    h2 { font-size: 1rem; margin: 0 0 .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+    canvas { max-height: 260px; }
+{% endblock %}
+
+{% block admin_body %}
+<h1>Dashboard</h1>
+
+<div class="kpi-grid">
+    <div class="kpi"><strong>{{ overview.championshipsCount }}</strong><span>Campeonatos</span></div>
+    <div class="kpi"><strong>{{ overview.seasonsCount }}</strong><span>Temporadas</span></div>
+    <div class="kpi"><strong>{{ overview.teamsCount }}</strong><span>Times</span></div>
+    <div class="kpi"><strong>{{ overview.playersCount }}</strong><span>Jogadores</span></div>
+    <div class="kpi"><strong>{{ overview.matchesCount }}</strong><span>Jogos</span></div>
+    <div class="kpi"><strong>{{ overview.goalsCount }}</strong><span>Gols</span></div>
+</div>
+
+{% if not overview.championship %}
+    <div class="empty">Cadastre um campeonato para ver classificação, gráficos e artilharia aqui.</div>
+{% else %}
+    <div class="charts-grid">
+        <div class="card">
+            <h2>Gols por rodada</h2>
+            <canvas id="goalsByRoundChart"></canvas>
+        </div>
+        <div class="card">
+            <h2>Comparação entre equipes (pontos)</h2>
+            <canvas id="pointsByTeamChart"></canvas>
+        </div>
+    </div>
+
+    <div class="two-col">
+        <div>
+            <h2>Últimos resultados</h2>
+            {% if overview.recentResults is empty %}
+                <div class="empty">Nenhum resultado registrado.</div>
+            {% else %}
+                <div class="list">
+                    {% for match in overview.recentResults %}
+                        <div class="list-item" style="cursor:default;">
+                            <span>{{ match.homeTeam.name }} {{ match.homeScore }} × {{ match.awayScore }} {{ match.awayTeam.name }}</span>
+                            <span class="meta">{{ match.scheduledAt ? match.scheduledAt|date('d/m') : '' }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <div>
+            <h2>Próximos jogos</h2>
+            {% if overview.upcomingMatches is empty %}
+                <div class="empty">Nenhum jogo agendado.</div>
+            {% else %}
+                <div class="list">
+                    {% for match in overview.upcomingMatches %}
+                        <div class="list-item" style="cursor:default;">
+                            <span>{{ match.homeTeam.name }} × {{ match.awayTeam.name }}</span>
+                            <span class="meta">{{ match.scheduledAt ? match.scheduledAt|date('d/m H:i') : 'a definir' }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="two-col">
+        <div>
+            <h2>Aproveitamento dos times</h2>
+            {% if overview.standings is empty %}
+                <div class="empty">Nenhum jogo encerrado ainda.</div>
+            {% else %}
+                <table>
+                    <thead><tr><th>Time</th><th>Pts</th><th>Aproveit.</th></tr></thead>
+                    <tbody>
+                        {% for row in overview.standings %}
+                            <tr><td>{{ row.team.name }}</td><td>{{ row.points }}</td><td>{{ row.winPercentage }}%</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+        <div>
+            <h2>Artilharia</h2>
+            {% if overview.topScorers is empty %}
+                <div class="empty">Nenhum gol registrado ainda.</div>
+            {% else %}
+                <table>
+                    <thead><tr><th>Jogador</th><th>Gols</th></tr></thead>
+                    <tbody>
+                        {% for stat in overview.topScorers %}
+                            <tr><td>{{ stat.player.name }}</td><td>{{ stat.count }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
+
+{% if overview.recentImports is not empty %}
+    <h2>Importações recentes</h2>
+    <table>
+        <thead><tr><th>Tipo</th><th>Status</th><th>Processados</th><th>Criados</th><th>Erros</th><th>Data</th></tr></thead>
+        <tbody>
+            {% for log in overview.recentImports %}
+                <tr>
+                    <td>{{ log.type }}</td>
+                    <td><span class="badge">{{ log.status }}</span></td>
+                    <td>{{ log.recordsProcessed }}</td>
+                    <td>{{ log.recordsCreated }}</td>
+                    <td>{{ log.recordsFailed }}</td>
+                    <td>{{ log.createdAt|date('d/m/Y H:i') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock %}
+
+{% block javascripts %}
+{% if overview.championship %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const chartTextColor = '#a4aaa1';
+    const chartGridColor = '#2a2e2a';
+    Chart.defaults.color = chartTextColor;
+    Chart.defaults.borderColor = chartGridColor;
+
+    new Chart(document.getElementById('goalsByRoundChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ overview.goalsByRound|map(r => r.label)|json_encode|raw }},
+            datasets: [{
+                label: 'Gols',
+                data: {{ overview.goalsByRound|map(r => r.goals)|json_encode|raw }},
+                backgroundColor: '#c5f05c',
+            }],
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+        },
+    });
+
+    new Chart(document.getElementById('pointsByTeamChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ overview.pointsByTeam|map(t => t.team)|json_encode|raw }},
+            datasets: [{
+                label: 'Pontos',
+                data: {{ overview.pointsByTeam|map(t => t.points)|json_encode|raw }},
+                backgroundColor: '#c5f05c',
+            }],
+        },
+        options: {
+            indexAxis: 'y',
+            plugins: { legend: { display: false } },
+            scales: { x: { beginAtZero: true, ticks: { precision: 0 } } },
+        },
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

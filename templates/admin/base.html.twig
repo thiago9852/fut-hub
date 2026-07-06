@@ -1,0 +1,186 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+<style>
+    :root {
+        --bg: #101110;
+        --surface: #171917;
+        --line: #2a2e2a;
+        --muted: #a4aaa1;
+        --text: #f0f2ec;
+        --accent: #c5f05c;
+        --accent-dark: #1b2410;
+        --danger: #ff6b6b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        display: flex;
+        min-height: 100vh;
+    }
+
+    nav {
+        width: 220px;
+        flex-shrink: 0;
+        background: var(--surface);
+        border-right: 1px solid var(--line);
+        padding: 1.25rem 0;
+    }
+
+    nav .brand { padding: 0 1.25rem 1.25rem; font-weight: 700; }
+    nav .brand span { color: var(--accent); }
+
+    nav a {
+        display: block;
+        padding: .55rem 1.25rem;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: .9rem;
+    }
+
+    nav a:hover { color: var(--text); }
+    nav a.active { color: var(--accent); background: var(--accent-dark); }
+
+    nav .group-label {
+        padding: 1rem 1.25rem .35rem;
+        font-size: .7rem;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        color: var(--muted);
+    }
+
+    .content { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--line);
+        background: var(--surface);
+    }
+
+    header .user {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: .85rem;
+        color: var(--muted);
+    }
+
+    header .user a {
+        color: var(--text);
+        text-decoration: none;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: .35rem .75rem;
+    }
+
+    header .user a:hover { border-color: var(--accent); }
+
+    main { padding: 2rem; flex: 1; }
+
+    h1 { margin: 0 0 1.5rem; font-size: 1.4rem; }
+
+    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+
+    .btn {
+        display: inline-block;
+        padding: .5rem 1rem;
+        background: var(--accent);
+        color: #101110;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: .85rem;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .btn.secondary { background: transparent; color: var(--text); border: 1px solid var(--line); }
+    .btn.danger { background: var(--danger); color: #101110; }
+
+    table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+    th, td { text-align: left; padding: .65rem 1rem; border-bottom: 1px solid var(--line); font-size: .9rem; }
+    th { color: var(--muted); font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; }
+    tr:last-child td { border-bottom: none; }
+    td.actions { text-align: right; white-space: nowrap; }
+    td.actions a { color: var(--muted); text-decoration: none; margin-left: .75rem; font-size: .85rem; }
+    td.actions a:hover { color: var(--accent); }
+    .empty { color: var(--muted); padding: 2rem; text-align: center; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 1.5rem; max-width: 520px; }
+
+    form label { display: block; font-size: .85rem; color: var(--muted); margin-bottom: .35rem; margin-top: 1rem; }
+    form input, form select, form textarea {
+        width: 100%;
+        padding: .55rem .75rem;
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--text);
+        font-size: .9rem;
+        font-family: inherit;
+    }
+    form input:focus, form select:focus, form textarea:focus { outline: none; border-color: var(--accent); }
+    form .form-actions { margin-top: 1.5rem; display: flex; gap: .75rem; }
+    .form-errors, .errors { color: var(--danger); font-size: .8rem; margin-top: .25rem; list-style: none; padding: 0; }
+    .badge { display: inline-block; padding: .15rem .5rem; border-radius: 6px; background: var(--accent-dark); color: var(--accent); font-size: .75rem; }
+
+    {% block extra_stylesheets %}{% endblock %}
+</style>
+{% endblock %}
+
+{% block body %}
+{% set nav_items = [
+    {group: null, label: 'Dashboard', route: 'admin_dashboard'},
+    {group: 'Campeonatos', label: 'Campeonatos', route: 'admin_championship_index'},
+    {group: 'Campeonatos', label: 'Temporadas', route: 'admin_season_index'},
+    {group: 'Campeonatos', label: 'Rodadas', route: 'admin_round_index'},
+    {group: 'Elenco', label: 'Times', route: 'admin_team_index'},
+    {group: 'Elenco', label: 'Jogadores', route: 'admin_player_index'},
+    {group: 'Elenco', label: 'Elencos', route: 'admin_team_player_index'},
+    {group: 'Partidas', label: 'Jogos', route: 'admin_match_index'},
+    {group: 'Partidas', label: 'Eventos', route: 'admin_match_event_index'},
+    {group: 'Partidas', label: 'Escalações', route: 'admin_match_lineup_index'},
+    {group: 'Partidas', label: 'Estádios', route: 'admin_stadium_index'},
+    {group: 'Configurações', label: 'Usuários', route: 'admin_user_index', role: 'ROLE_ADMIN'},
+    {group: 'Configurações', label: 'Organização', route: 'admin_settings', role: 'ROLE_ADMIN'},
+] %}
+<nav>
+    <div class="brand">Futebol <span>Local</span></div>
+    {% set current_group = null %}
+    {% for item in nav_items %}
+        {% if item.role is not defined or is_granted(item.role) %}
+            {% if item.group != current_group %}
+                {% set current_group = item.group %}
+                {% if current_group %}<div class="group-label">{{ current_group }}</div>{% endif %}
+            {% endif %}
+            <a href="{{ path(item.route) }}" class="{{ app.current_route == item.route ? 'active' : '' }}">{{ item.label }}</a>
+        {% endif %}
+    {% endfor %}
+</nav>
+<div class="content">
+    <header>
+        {% if app.user %}
+            <div class="user">
+                <span>{{ app.user.name }}</span>
+                <a href="{{ path('admin_logout') }}">Sair</a>
+            </div>
+        {% endif %}
+    </header>
+    <main>
+        {% for label, messages in app.flashes(['success', 'error']) %}
+            {% for message in messages %}
+                <div class="{{ label == 'error' ? 'errors' : 'badge' }}" style="display:block; margin-bottom: 1.25rem; padding: .6rem .9rem;">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+        {% block admin_body %}{% endblock %}
+    </main>
+</div>
+{% endblock %}

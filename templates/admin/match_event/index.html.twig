@@ -1,0 +1,45 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Eventos — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<div class="toolbar">
+    <h1 style="margin:0;">Eventos</h1>
+    <a href="{{ path('admin_match_event_new') }}" class="btn">+ Novo evento</a>
+</div>
+
+{% if events is empty %}
+    <div class="empty">Nenhum evento registrado ainda.</div>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>Jogo</th>
+                <th>Time</th>
+                <th>Jogador</th>
+                <th>Tipo</th>
+                <th>Minuto</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+                <tr>
+                    <td>{{ event.match.homeTeam.name }} × {{ event.match.awayTeam.name }}</td>
+                    <td>{{ event.team.name }}</td>
+                    <td>{{ event.player.name }}</td>
+                    <td><span class="badge">{{ event.type.value }}</span></td>
+                    <td>{{ event.minute ?? '—' }}</td>
+                    <td class="actions">
+                        <a href="{{ path('admin_match_event_edit', {id: event.id}) }}">Editar</a>
+                        <form method="post" action="{{ path('admin_match_event_delete', {id: event.id}) }}" style="display:inline" onsubmit="return confirm('Remover este evento?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-match-event-' ~ event.id) }}">
+                            <button type="submit" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:.85rem;padding:0;margin-left:.75rem;">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock %}

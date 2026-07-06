@@ -1,0 +1,43 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Campeonatos — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<div class="toolbar">
+    <h1 style="margin:0;">Campeonatos</h1>
+    <a href="{{ path('admin_championship_new') }}" class="btn">+ Novo campeonato</a>
+</div>
+
+{% if championships is empty %}
+    <div class="empty">Nenhum campeonato cadastrado ainda.</div>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Formato</th>
+                <th>Status</th>
+                <th>Temporadas</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for championship in championships %}
+                <tr>
+                    <td>{{ championship.name }}</td>
+                    <td>{{ championship.format ?? '—' }}</td>
+                    <td><span class="badge">{{ championship.status }}</span></td>
+                    <td>{{ championship.seasons|length }}</td>
+                    <td class="actions">
+                        <a href="{{ path('admin_championship_edit', {id: championship.id}) }}">Editar</a>
+                        <form method="post" action="{{ path('admin_championship_delete', {id: championship.id}) }}" style="display:inline" onsubmit="return confirm('Remover este campeonato?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-championship-' ~ championship.id) }}">
+                            <button type="submit" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:.85rem;padding:0;margin-left:.75rem;">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ season.name }} — Futebol Local{% endblock %}
+
+{% block extra_stylesheets %}
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem; }
+    .stats-grid table { width: 100%; }
+    h2 { font-size: 1rem; margin: 0 0 .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+{% endblock %}
+
+{% block admin_body %}
+<h1>{{ season.championship.name }} — {{ season.name }}</h1>
+
+<h2 style="margin-top: 2rem;">Classificação</h2>
+{% if standings is empty %}
+    <div class="empty">Nenhum jogo encerrado nesta temporada ainda.</div>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Time</th>
+                <th>P</th>
+                <th>J</th>
+                <th>V</th>
+                <th>E</th>
+                <th>D</th>
+                <th>GP</th>
+                <th>GC</th>
+                <th>SG</th>
+                <th>%</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in standings %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ row.team.name }}</td>
+                    <td><strong>{{ row.points }}</strong></td>
+                    <td>{{ row.played }}</td>
+                    <td>{{ row.wins }}</td>
+                    <td>{{ row.draws }}</td>
+                    <td>{{ row.losses }}</td>
+                    <td>{{ row.goalsFor }}</td>
+                    <td>{{ row.goalsAgainst }}</td>
+                    <td>{{ row.goalDifference }}</td>
+                    <td>{{ row.winPercentage }}%</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+<div class="stats-grid">
+    <div>
+        <h2>Artilharia</h2>
+        {% if topScorers is empty %}
+            <div class="empty">Sem gols registrados.</div>
+        {% else %}
+            <table>
+                <thead><tr><th>Jogador</th><th>Time</th><th>Gols</th></tr></thead>
+                <tbody>
+                    {% for stat in topScorers %}
+                        <tr><td>{{ stat.player.name }}</td><td>{{ stat.team.name }}</td><td>{{ stat.count }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+    <div>
+        <h2>Assistências</h2>
+        {% if topAssists is empty %}
+            <div class="empty">Sem assistências registradas.</div>
+        {% else %}
+            <table>
+                <thead><tr><th>Jogador</th><th>Time</th><th>Assist.</th></tr></thead>
+                <tbody>
+                    {% for stat in topAssists %}
+                        <tr><td>{{ stat.player.name }}</td><td>{{ stat.team.name }}</td><td>{{ stat.count }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+    <div>
+        <h2>Cartões amarelos</h2>
+        {% if yellowCards is empty %}
+            <div class="empty">Sem cartões amarelos registrados.</div>
+        {% else %}
+            <table>
+                <thead><tr><th>Jogador</th><th>Time</th><th>Qtd.</th></tr></thead>
+                <tbody>
+                    {% for stat in yellowCards %}
+                        <tr><td>{{ stat.player.name }}</td><td>{{ stat.team.name }}</td><td>{{ stat.count }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+    <div>
+        <h2>Cartões vermelhos</h2>
+        {% if redCards is empty %}
+            <div class="empty">Sem cartões vermelhos registrados.</div>
+        {% else %}
+            <table>
+                <thead><tr><th>Jogador</th><th>Time</th><th>Qtd.</th></tr></thead>
+                <tbody>
+                    {% for stat in redCards %}
+                        <tr><td>{{ stat.player.name }}</td><td>{{ stat.team.name }}</td><td>{{ stat.count }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

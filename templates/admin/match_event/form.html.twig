@@ -1,0 +1,20 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ event.id ? 'Editar' : 'Novo' }} evento — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<h1>{{ event.id ? 'Editar evento' : 'Novo evento' }}</h1>
+<div class="card">
+    {{ form_start(form) }}
+        {{ form_row(form.match) }}
+        {{ form_row(form.team) }}
+        {{ form_row(form.player) }}
+        {{ form_row(form.type) }}
+        {{ form_row(form.minute) }}
+        <div class="form-actions">
+            <button type="submit" class="btn">Salvar</button>
+            <a href="{{ path('admin_match_event_index') }}" class="btn secondary">Cancelar</a>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

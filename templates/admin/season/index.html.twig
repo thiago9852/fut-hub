@@ -1,0 +1,43 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Temporadas — Futebol Local{% endblock %}
+
+{% block admin_body %}
+<div class="toolbar">
+    <h1 style="margin:0;">Temporadas</h1>
+    <a href="{{ path('admin_season_new') }}" class="btn">+ Nova temporada</a>
+</div>
+
+{% if seasons is empty %}
+    <div class="empty">Nenhuma temporada cadastrada ainda.</div>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>Campeonato</th>
+                <th>Nome</th>
+                <th>Ano</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for season in seasons %}
+                <tr>
+                    <td>{{ season.championship.name }}</td>
+                    <td><a href="{{ path('admin_season_show', {id: season.id}) }}" style="color: var(--accent); text-decoration:none;">{{ season.name }}</a></td>
+                    <td>{{ season.year }}</td>
+                    <td><span class="badge">{{ season.status }}</span></td>
+                    <td class="actions">
+                        <a href="{{ path('admin_season_edit', {id: season.id}) }}">Editar</a>
+                        <form method="post" action="{{ path('admin_season_delete', {id: season.id}) }}" style="display:inline" onsubmit="return confirm('Remover esta temporada?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-season-' ~ season.id) }}">
+                            <button type="submit" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:.85rem;padding:0;margin-left:.75rem;">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock %}
