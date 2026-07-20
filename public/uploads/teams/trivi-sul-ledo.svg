@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="tri_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#881337"/>
+      <stop offset="100%" stop-color="#4c0519"/>
+    </linearGradient>
+  </defs>
+  <path d="M 50,5 L 90,25 C 90,65 65,85 50,95 C 35,85 10,65 10,25 Z" fill="url(#tri_bg)" stroke="#fbbf24" stroke-width="3.5"/>
+  <!-- Crown / Triple Points -->
+  <polygon points="30,55 35,38 45,46 50,32 55,46 65,38 70,55" fill="#fbbf24"/>
+  <circle cx="50" cy="68" r="4" fill="#ffffff"/>
+  <text x="50" y="82" font-family="'Space Grotesk', 'Arial Black', sans-serif" font-weight="900" font-size="10" fill="#fbbf24" text-anchor="middle" letter-spacing="1">TRIVI</text>
+</svg>

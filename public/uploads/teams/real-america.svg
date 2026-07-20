@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="bg-real" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <!-- Shield shape -->
+  <path d="M60 6 L108 24 C108 72 60 114 60 114 C60 114 12 72 12 24 Z" fill="url(#bg-real)" stroke="#38bdf8" stroke-width="3"/>
+  <!-- Crown on top -->
+  <path d="M44 26 L50 36 L60 22 L70 36 L76 26 L76 42 L44 42 Z" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
+  <circle cx="44" cy="24" r="2.5" fill="#fef08a"/>
+  <circle cx="60" cy="20" r="3" fill="#fef08a"/>
+  <circle cx="76" cy="24" r="2.5" fill="#fef08a"/>
+  <!-- Monogram -->
+  <text x="60" y="74" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="900" font-size="28" fill="#ffffff" text-anchor="middle" letter-spacing="-1">RA</text>
+  <text x="60" y="90" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="700" font-size="10" fill="#38bdf8" text-anchor="middle" letter-spacing="1">AMÉRICA</text>
+</svg>

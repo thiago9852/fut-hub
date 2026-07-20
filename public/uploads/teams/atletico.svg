@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="bg-atletico" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18181b"/>
+      <stop offset="100%" stop-color="#09090b"/>
+    </linearGradient>
+  </defs>
+  <!-- Shield shape -->
+  <path d="M60 6 L108 24 C108 72 60 114 60 114 C60 114 12 72 12 24 Z" fill="url(#bg-atletico)" stroke="#ffffff" stroke-width="3"/>
+  <!-- Stripes inside -->
+  <g opacity="0.15">
+    <rect x="36" y="25" width="12" height="65" fill="#ffffff"/>
+    <rect x="72" y="25" width="12" height="65" fill="#ffffff"/>
+  </g>
+  <!-- Star -->
+  <polygon points="60,22 63,30 72,30 65,35 67,43 60,38 53,43 55,35 48,30 57,30" fill="#f59e0b"/>
+  <!-- Monogram -->
+  <text x="60" y="74" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="900" font-size="30" fill="#ffffff" text-anchor="middle" letter-spacing="-1">CAM</text>
+  <text x="60" y="90" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="700" font-size="10" fill="#e4e4e7" text-anchor="middle" letter-spacing="1">ATLÉTICO</text>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="rise_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#4c1d95"/>
+    </linearGradient>
+  </defs>
+  <path d="M 50,5 L 90,20 L 78,78 L 50,95 L 22,78 L 10,20 Z" fill="url(#rise_bg)" stroke="#eab308" stroke-width="3"/>
+  <!-- Lightning Bolt -->
+  <polygon points="54,20 34,48 48,48 44,78 66,42 52,42" fill="#eab308" stroke="#ffffff" stroke-width="1.5"/>
+</svg>

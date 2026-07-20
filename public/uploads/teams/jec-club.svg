@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="jec_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="50%" stop-color="#b91c1c"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <path d="M 50,5 L 90,20 L 80,75 L 50,95 L 20,75 L 10,20 Z" fill="url(#jec_bg)" stroke="#ffffff" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M 50,15 L 80,27 L 72,70 L 50,85 L 28,70 L 20,27 Z" fill="#1e293b" opacity="0.4"/>
+  <text x="50" y="55" font-family="'Space Grotesk', 'Arial Black', sans-serif" font-weight="900" font-size="24" fill="#ffffff" text-anchor="middle" letter-spacing="1">JEC</text>
+  <circle cx="50" cy="72" r="5" fill="#eab308"/>
+</svg>
