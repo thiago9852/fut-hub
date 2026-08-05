@@ -1,0 +1,45 @@
+{% extends 'public/base.html.twig' %}
+
+{% block title %}Campeonatos — FutHub{% endblock %}
+
+{% block public_body %}
+<div style="display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+    <div>
+        <h1 style="font-size: 1.85rem; color: #ffffff;">Campeonatos</h1>
+        <p class="subtitle" style="margin-bottom: 0;">Selecione uma competição para acompanhar a tabela de classificação, jogos, times e artilharia.</p>
+    </div>
+</div>
+
+{% if championships is empty %}
+    <div class="empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <p>Nenhum campeonato disponível no momento.</p>
+    </div>
+{% else %}
+    <div class="championships-grid">
+        {% for championship in championships %}
+            <a href="{{ path('public_championship_standings', {slug: championship.slug}) }}" class="championship-card">
+                <div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <div class="championship-card-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                        </div>
+                        <span class="badge badge-emerald">Ativo</span>
+                    </div>
+                    <h2>{{ championship.name }}</h2>
+                    <p>{{ championship.description ?: 'Competição oficial reunindo os principais times da região.' }}</p>
+                </div>
+                
+                <div class="championship-card-footer">
+                    <span style="color: var(--muted); font-size: 0.78rem;">
+                        {{ championship.format ?: 'Pontos Corridos' }}
+                    </span>
+                    <span style="color: var(--accent); font-weight: 700;">
+                        Ver Tabela &rarr;
+                    </span>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}

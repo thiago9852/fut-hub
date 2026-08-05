@@ -1,0 +1,47 @@
+{% set current = app.current_route %}
+
+<div class="championship-header-card" style="background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 1.5rem 1.75rem; margin-bottom: 1.5rem;">
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; flex-wrap: wrap;">
+                <span class="badge badge-accent">Campeonato</span>
+                {% if championship.format %}
+                    <span class="badge badge-cyan">{{ championship.format }}</span>
+                {% endif %}
+                <span class="badge badge-emerald">Ativo</span>
+            </div>
+            <h1 style="font-size: 1.85rem; margin-bottom: 0.25rem; color: #ffffff;">{{ championship.name }}</h1>
+            <p class="subtitle" style="margin-bottom: 0;">
+                {% if season %}
+                    <span style="color: var(--text-secondary); font-weight: 600;">Temporada {{ season.name }}</span>
+                    {% if championship.description %} &bull; {{ championship.description }}{% endif %}
+                {% else %}
+                    Nenhuma temporada ativa vinculada
+                {% endif %}
+            </p>
+        </div>
+
+        <a href="{{ path('public_championship_index') }}" class="btn btn-secondary" style="font-size: 0.82rem; padding: 0.4rem 0.85rem;">
+            &larr; Outros Campeonatos
+        </a>
+    </div>
+</div>
+
+<nav class="tabs" aria-label="Navegação do Campeonato">
+    <a href="{{ path('public_championship_standings', {slug: championship.slug}) }}" class="{{ current == 'public_championship_standings' ? 'active' : '' }}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        Classificação
+    </a>
+    <a href="{{ path('public_championship_matches', {slug: championship.slug}) }}" class="{{ current == 'public_championship_matches' ? 'active' : '' }}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        Jogos & Resultados
+    </a>
+    <a href="{{ path('public_championship_teams', {slug: championship.slug}) }}" class="{{ current == 'public_championship_teams' ? 'active' : '' }}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3z"/></svg>
+        Times
+    </a>
+    <a href="{{ path('public_championship_top_scorers', {slug: championship.slug}) }}" class="{{ current == 'public_championship_top_scorers' ? 'active' : '' }}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="12 6 15.5 10 14 14.5 10 14.5 8.5 10 12 6"/></svg>
+        Artilharia
+    </a>
+</nav>

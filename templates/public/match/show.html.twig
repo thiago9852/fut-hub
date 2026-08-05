@@ -1,0 +1,195 @@
+{% extends 'public/base.html.twig' %}
+{% import 'components/_macros.html.twig' as macros %}
+
+{% block title %}{{ match.homeTeam.name }} × {{ match.awayTeam.name }} — Detalhes da Partida — FutHub{% endblock %}
+
+{% block public_body %}
+{# Scoreboard Card #}
+<div class="match-scoreboard-card">
+    <div class="match-header-meta">
+        <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+            <a href="{{ path('public_championship_matches', {slug: match.season.championship.slug}) }}" class="badge badge-accent" style="text-decoration:none;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                {{ match.season.championship.name }}
+            </a>
+            <span class="badge badge-cyan">Temporada {{ match.season.name }}</span>
+            {% if match.round %}
+                <span class="badge">Rodada {{ match.round.number }}</span>
+            {% endif %}
+        </div>
+
+        <div>
+            {{ macros.match_status_badge(match.status) }}
+        </div>
+    </div>
+
+    <div class="match-scoreboard-main">
+        <a href="{{ path('public_team_show', {slug: match.homeTeam.slug}) }}" class="scoreboard-team">
+            {{ macros.team_crest(match.homeTeam, 64) }}
+            <div>
+                <h2>{{ match.homeTeam.name }}</h2>
+                <span class="badge" style="font-size:0.68rem; margin-top:0.25rem;">Mandante</span>
+            </div>
+        </a>
+
+        <div class="scoreboard-center">
+            <div class="scoreboard-numbers">
+                <div class="score-box">{{ match.homeScore is not null ? match.homeScore : '-' }}</div>
+                <div class="score-divider">:</div>
+                <div class="score-box">{{ match.awayScore is not null ? match.awayScore : '-' }}</div>
+            </div>
+        </div>
+
+        <a href="{{ path('public_team_show', {slug: match.awayTeam.slug}) }}" class="scoreboard-team">
+            {{ macros.team_crest(match.awayTeam, 64) }}
+            <div>
+                <h2>{{ match.awayTeam.name }}</h2>
+                <span class="badge" style="font-size:0.68rem; margin-top:0.25rem;">Visitante</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="match-info-strip">
+        <div class="info-pill">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+            <span>{{ match.scheduledAt ? match.scheduledAt|date('d/m/Y \\à\\s H:i') : 'Data e horário a definir' }}</span>
+        </div>
+        {% if match.stadium %}
+            <div class="info-pill">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>{{ match.stadium.name }}</span>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{# Events Timeline #}
+<div style="margin-bottom: 2rem;">
+    <div class="section-header">
+        <h3 class="section-title">
+            <span class="section-title-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </span>
+            Súmula de Eventos e Lances
+        </h3>
+        <span style="color: var(--muted); font-size: 0.8rem;">{{ events|length }} lances</span>
+    </div>
+
+    {% if events is empty %}
+        <div class="empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <p>Nenhum evento registrado nesta partida (gols, cartões ou substituições).</p>
+        </div>
+    {% else %}
+        <div class="events-timeline">
+            {% for event in events %}
+                {% set typeVal = event.type.value|default(event.type) %}
+                <div class="event-card">
+                    <div style="display:flex; align-items:center; gap:0.75rem;">
+                        <span class="minute-tag">{{ event.minute ? event.minute ~ "'" : '-' }}</span>
+                        
+                        <div>
+                            <div style="font-weight:700; color:#ffffff; font-size:0.88rem; display:flex; align-items:center; gap:0.4rem;">
+                                {% if typeVal == 'GOL' or typeVal == 'GOAL' %}
+                                    <span style="color:var(--accent);">⚽ Gol</span>
+                                {% elseif typeVal == 'CARTAO_AMARELO' or typeVal == 'YELLOW_CARD' %}
+                                    <span style="color:var(--amber);">🟨 Amarelo</span>
+                                {% elseif typeVal == 'CARTAO_VERMELHO' or typeVal == 'RED_CARD' %}
+                                    <span style="color:var(--red);">🟥 Vermelho</span>
+                                {% elseif typeVal == 'SUBSTITUICAO' or typeVal == 'SUBSTITUTION' %}
+                                    <span style="color:var(--cyan);">🔄 Substituição</span>
+                                {% else %}
+                                    <span>{{ typeVal }}</span>
+                                {% endif %}
+                                &bull;
+                                <a href="{{ path('public_player_show', {slug: event.player.slug}) }}" style="color:#ffffff;">
+                                    {{ event.player.name }}
+                                </a>
+                            </div>
+                            <div style="font-size:0.74rem; color:var(--muted); margin-top:0.1rem;">
+                                {{ event.team.name }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        {{ macros.team_badge(event.team, 18) }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+{# Lineups (Escalações) #}
+<div>
+    <div class="section-header">
+        <h3 class="section-title">
+            <span class="section-title-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="17" cy="8.5" r="2.6"/><path d="M15.5 14.2c2.7.5 4.5 2.6 4.5 5.8"/></svg>
+            </span>
+            Escalações
+        </h3>
+    </div>
+
+    <div class="lineups-grid">
+        {# Home Team Lineup #}
+        <div class="lineup-box">
+            <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem; padding-bottom:0.6rem; border-bottom:1px solid var(--line);">
+                {{ macros.team_crest(match.homeTeam, 28) }}
+                <div>
+                    <strong style="color:#ffffff; font-size:0.95rem;">{{ match.homeTeam.name }}</strong>
+                    <div style="font-size:0.72rem; color:var(--muted);">Mandante</div>
+                </div>
+            </div>
+
+            {% if homeLineup is empty %}
+                <p style="color:var(--muted); font-size:0.84rem;">Escalação não cadastrada.</p>
+            {% else %}
+                <div style="display:flex; flex-direction:column; gap:0.45rem;">
+                    {% for lineup in homeLineup %}
+                        <div style="display:flex; align-items:center; justify-content:space-between; padding:0.3rem 0; border-bottom:1px solid rgba(255,255,255,0.02);">
+                            <div style="display:flex; align-items:center; gap:0.5rem;">
+                                <span class="shirt-pill">{{ lineup.shirtNumber ?: '-' }}</span>
+                                <a href="{{ path('public_player_show', {slug: lineup.player.slug}) }}" style="color:#ffffff; font-size:0.85rem; font-weight:600;">
+                                    {{ lineup.player.name }}
+                                </a>
+                            </div>
+                            <span class="badge" style="font-size:0.65rem;">{{ lineup.position ?: (lineup.starter ? 'Titular' : 'Reserva') }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        {# Away Team Lineup #}
+        <div class="lineup-box">
+            <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem; padding-bottom:0.6rem; border-bottom:1px solid var(--line);">
+                {{ macros.team_crest(match.awayTeam, 28) }}
+                <div>
+                    <strong style="color:#ffffff; font-size:0.95rem;">{{ match.awayTeam.name }}</strong>
+                    <div style="font-size:0.72rem; color:var(--muted);">Visitante</div>
+                </div>
+            </div>
+
+            {% if awayLineup is empty %}
+                <p style="color:var(--muted); font-size:0.84rem;">Escalação não cadastrada.</p>
+            {% else %}
+                <div style="display:flex; flex-direction:column; gap:0.45rem;">
+                    {% for lineup in awayLineup %}
+                        <div style="display:flex; align-items:center; justify-content:space-between; padding:0.3rem 0; border-bottom:1px solid rgba(255,255,255,0.02);">
+                            <div style="display:flex; align-items:center; gap:0.5rem;">
+                                <span class="shirt-pill">{{ lineup.shirtNumber ?: '-' }}</span>
+                                <a href="{{ path('public_player_show', {slug: lineup.player.slug}) }}" style="color:#ffffff; font-size:0.85rem; font-weight:600;">
+                                    {{ lineup.player.name }}
+                                </a>
+                            </div>
+                            <span class="badge" style="font-size:0.65rem;">{{ lineup.position ?: (lineup.starter ? 'Titular' : 'Reserva') }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

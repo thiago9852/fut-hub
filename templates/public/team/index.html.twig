@@ -1,0 +1,58 @@
+{% extends 'public/base.html.twig' %}
+{% import 'components/_macros.html.twig' as macros %}
+
+{% block title %}Clubes e Times — FutHub{% endblock %}
+
+{% block public_body %}
+<div style="display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+    <div>
+        <h1 style="font-size: 1.85rem; color: #ffffff;">Clubes e Times</h1>
+        <p class="subtitle" style="margin-bottom: 0;">Todos os times cadastrados na plataforma e seus respectivos campeonatos em disputa.</p>
+    </div>
+    <span style="color: var(--muted); font-size: 0.85rem; font-weight: 600;">
+        {{ teamsData|length }} clubes registrados
+    </span>
+</div>
+
+{% if teamsData is empty %}
+    <div class="empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <p>Nenhum time cadastrado no sistema até o momento.</p>
+    </div>
+{% else %}
+    <div class="teams-grid">
+        {% for item in teamsData %}
+            {% set team = item.team %}
+            <a href="{{ path('public_team_show', {slug: team.slug}) }}" class="team-card">
+                <div>
+                    {{ macros.team_crest(team, 56) }}
+                </div>
+                <div>
+                    <h3>{{ team.name }}</h3>
+                    <div class="city-tag">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                        {{ team.city ?: 'Januária' }}
+                    </div>
+                </div>
+
+                <div style="width: 100%; border-top: 1px solid var(--line); padding-top: 0.75rem; margin-top: 0.25rem;">
+                    {% if item.championships is not empty %}
+                        <div style="display: flex; flex-direction: column; gap: 0.35rem; align-items: center;">
+                            <span style="font-size: 0.72rem; color: var(--muted); text-transform: uppercase; font-weight: 700;">Em Disputa</span>
+                            {% for c in item.championships %}
+                                <span class="badge badge-accent" style="font-size: 0.72rem;">{{ c.name }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <span class="badge" style="font-size: 0.72rem; color: var(--muted);">Sem campeonato ativo</span>
+                    {% endif %}
+                </div>
+
+                <div class="team-card-btn">
+                    Ver Perfil do Clube &rarr;
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}

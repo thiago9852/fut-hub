@@ -1,0 +1,296 @@
+{% extends 'public/base.html.twig' %}
+{% import 'components/_macros.html.twig' as macros %}
+
+{% block title %}{{ team.name }} — Perfil do Clube — FutHub{% endblock %}
+
+{% block public_body %}
+{# Team Hero Header #}
+<div class="team-hero">
+    {{ macros.team_crest(team, 72) }}
+    <div class="team-details">
+        <div style="display:flex; align-items:center; gap:0.45rem; margin-bottom:0.2rem;">
+            <span class="badge badge-accent">Clube</span>
+            <span class="badge badge-emerald">Ativo</span>
+        </div>
+        <h1>{{ team.name }}</h1>
+        <div class="team-meta-tags">
+            <div class="meta-pill">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ team.city ?: 'Januária' }}
+            </div>
+            {% if team.foundedAt %}
+                <div class="meta-pill">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+                    Fundação: {{ team.foundedAt|date('Y') }}
+                </div>
+            {% endif %}
+            <div class="meta-pill">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6"/></svg>
+                {{ roster|length }} Atletas no Elenco
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Estatísticas & Gráficos do Clube #}
+<div style="margin-bottom: 2rem;">
+    <div class="section-header">
+        <h3 class="section-title">
+            <span class="section-title-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </span>
+            Estatísticas & Desempenho
+        </h3>
+        <span style="color: var(--muted); font-size: 0.8rem;">Visão Geral da Temporada</span>
+    </div>
+
+    {# KPI Grid #}
+    <div class="stats-kpi-grid">
+        <div class="stat-kpi-box">
+            <strong>{{ stats.played }}</strong>
+            <span>Jogos Disputados</span>
+        </div>
+        <div class="stat-kpi-box">
+            <strong style="color: var(--accent);">{{ stats.winRate }}%</strong>
+            <span>Aproveitamento</span>
+        </div>
+        <div class="stat-kpi-box">
+            <strong>{{ stats.goalsFor }}</strong>
+            <span>Gols Marcados</span>
+        </div>
+        <div class="stat-kpi-box">
+            <strong>{{ stats.goalsAgainst }}</strong>
+            <span>Gols Sofridos</span>
+        </div>
+        <div class="stat-kpi-box">
+            <strong style="color: {{ stats.goalDiff > 0 ? 'var(--emerald)' : (stats.goalDiff < 0 ? 'var(--red)' : '#ffffff') }};">
+                {{ stats.goalDiff > 0 ? '+' ~ stats.goalDiff : stats.goalDiff }}
+            </strong>
+            <span>Saldo de Gols</span>
+        </div>
+    </div>
+
+    {# Charts Grid #}
+    <div class="charts-grid">
+        {# Chart 1: Resultados #}
+        <div class="chart-card">
+            <h4>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Resultados dos Jogos (V / E / D)
+            </h4>
+            <div class="chart-container">
+                <canvas id="teamResultsChart"></canvas>
+            </div>
+        </div>
+
+        {# Chart 2: Elenco por Posição #}
+        <div class="chart-card">
+            <h4>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6"/></svg>
+                Composição do Elenco por Setor
+            </h4>
+            <div class="chart-container">
+                <canvas id="teamRosterChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="two-col-team">
+    {# Squad Roster #}
+    <div>
+        <div class="section-header">
+            <h3 class="section-title">
+                <span class="section-title-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="17" cy="8.5" r="2.6"/><path d="M15.5 14.2c2.7.5 4.5 2.6 4.5 5.8"/></svg>
+                </span>
+                Elenco de Jogadores
+            </h3>
+            <span style="color: var(--muted); font-size: 0.8rem;">{{ roster|length }} atletas</span>
+        </div>
+
+        {% if roster is empty %}
+            <div class="empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                <p>Nenhum jogador cadastrado no elenco ativo deste time.</p>
+            </div>
+        {% else %}
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 40px; text-align: center;">Nº</th>
+                            <th>Atleta</th>
+                            <th>Posição</th>
+                            <th style="width: 70px; text-align: center;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for teamPlayer in roster %}
+                            <tr>
+                                <td style="text-align: center;">
+                                    <span class="shirt-badge">{{ teamPlayer.shirtNumber ?: '-' }}</span>
+                                </td>
+                                <td>
+                                    <a href="{{ path('public_player_show', {slug: teamPlayer.player.slug}) }}" style="color: #ffffff; font-weight: 700; display: inline-flex; align-items: center; gap: 0.5rem;">
+                                        {{ macros.player_avatar(teamPlayer.player, 24) }}
+                                        <span>{{ teamPlayer.player.name }}</span>
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="badge" style="font-size: 0.7rem;">{{ teamPlayer.player.position ?: 'Não informada' }}</span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <span class="badge badge-emerald" style="font-size: 0.68rem;">Ativo</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+
+    {# Recent Matches History #}
+    <div>
+        <div class="section-header">
+            <h3 class="section-title">
+                <span class="section-title-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+                </span>
+                Histórico de Jogos
+            </h3>
+            <span style="color: var(--muted); font-size: 0.8rem;">Últimas partidas</span>
+        </div>
+
+        {% if matches is empty %}
+            <div class="empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                <p>Nenhuma partida registrada para esta equipe.</p>
+            </div>
+        {% else %}
+            <div class="list">
+                {% for match in matches %}
+                    {% set isHome = match.homeTeam.id == team.id %}
+                    {% set myScore = isHome ? match.homeScore : match.awayScore %}
+                    {% set oppScore = isHome ? match.awayScore : match.homeScore %}
+                    {% set oppTeam = isHome ? match.awayTeam : match.homeTeam %}
+                    {% set finished = match.homeScore is not null and match.awayScore is not null %}
+                    
+                    <a href="{{ path('public_match_show', {id: match.id}) }}" class="team-match-item">
+                        <div style="display: flex; align-items: center; gap: 0.65rem;">
+                            {% if finished %}
+                                {% if myScore > oppScore %}
+                                    <span class="outcome-tag outcome-v" title="Vitória">V</span>
+                                {% elseif myScore < oppScore %}
+                                    <span class="outcome-tag outcome-d" title="Derrota">D</span>
+                                {% else %}
+                                    <span class="outcome-tag outcome-e" title="Empate">E</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="outcome-tag outcome-sched" title="Agendado">-</span>
+                            {% endif %}
+                            
+                            <div>
+                                <div style="font-weight: 700; color: #ffffff; font-size: 0.86rem; display: flex; align-items: center; gap: 0.35rem;">
+                                    <span>{{ isHome ? 'vs' : '@' }}</span>
+                                    <span>{{ macros.team_badge(oppTeam, 18) }}</span>
+                                </div>
+                                <div style="font-size: 0.74rem; color: var(--muted); margin-top: 0.1rem;">
+                                    {{ match.scheduledAt ? match.scheduledAt|date('d/m/Y') : 'Data n/d' }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="text-align: right;">
+                            {% if finished %}
+                                <div style="font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 800; font-size: 1rem; color: {{ myScore > oppScore ? 'var(--accent)' : (myScore < oppScore ? 'var(--red)' : '#ffffff') }};">
+                                    {{ match.homeScore }} &times; {{ match.awayScore }}
+                                </div>
+                                <span class="badge" style="font-size: 0.62rem;">Fim</span>
+                            {% else %}
+                                <span class="badge badge-cyan" style="font-size: 0.68rem;">{{ match.scheduledAt ? match.scheduledAt|date('H:i') : 'Agendado' }}</span>
+                            {% endif %}
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // 1. Team Results Chart (Doughnut)
+    var ctxResults = document.getElementById('teamResultsChart');
+    if (ctxResults) {
+        var wins = {{ stats.wins }};
+        var draws = {{ stats.draws }};
+        var losses = {{ stats.losses }};
+        var hasGames = (wins + draws + losses) > 0;
+
+        new Chart(ctxResults, {
+            type: 'doughnut',
+            data: {
+                labels: hasGames ? ['Vitórias', 'Empates', 'Derrotas'] : ['Sem jogos finalizados'],
+                datasets: [{
+                    data: hasGames ? [wins, draws, losses] : [1],
+                    backgroundColor: hasGames ? ['#34d399', '#fbbf24', '#f87171'] : ['rgba(255,255,255,0.1)'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#cbd5e1', font: { family: 'Plus Jakarta Sans', size: 12 }, padding: 16 }
+                    }
+                },
+                cutout: '68%'
+            }
+        });
+    }
+
+    // 2. Team Roster Positions Chart (Bar)
+    var ctxRoster = document.getElementById('teamRosterChart');
+    if (ctxRoster) {
+        new Chart(ctxRoster, {
+            type: 'bar',
+            data: {
+                labels: ['Goleiros', 'Defensores', 'Meio-campo', 'Atacantes'],
+                datasets: [{
+                    label: 'Atletas',
+                    data: [{{ stats.posGk }}, {{ stats.posDef }}, {{ stats.posMid }}, {{ stats.posFwd }}],
+                    backgroundColor: ['#38bdf8', '#34d399', '#fbbf24', '#a3e635'],
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#8b9bb4', font: { family: 'Plus Jakarta Sans', size: 11 } }
+                    },
+                    y: {
+                        grid: { color: 'rgba(255,255,255,0.06)' },
+                        ticks: { color: '#8b9bb4', stepSize: 1, font: { family: 'Space Grotesk', size: 11 } },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

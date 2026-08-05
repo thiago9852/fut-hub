@@ -1,0 +1,80 @@
+{% extends 'public/base.html.twig' %}
+{% import 'components/_macros.html.twig' as macros %}
+
+{% block title %}Jogos e Resultados — {{ championship.name }} — FutHub{% endblock %}
+
+{% block public_body %}
+{% include 'public/championship/_tabs.html.twig' %}
+
+<div class="section-header">
+    <h3 class="section-title">
+        <span class="section-title-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        </span>
+        Partidas e Resultados
+    </h3>
+    <span style="color: var(--muted); font-size: 0.8rem;">
+        {{ matches|length }} jogos
+    </span>
+</div>
+
+{% if matches is empty %}
+    <div class="empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <p>Nenhum jogo cadastrado nesta temporada até o momento.</p>
+    </div>
+{% else %}
+    <div class="match-list-grid">
+        {% for match in matches %}
+            <a href="{{ path('public_match_show', {id: match.id}) }}" class="match-row-card">
+                {# Left metadata #}
+                <div class="match-meta-left">
+                    <div style="font-weight: 700; font-size: 0.85rem; color: #ffffff; display:flex; align-items:center; gap:0.35rem;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent);"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+                        {{ match.scheduledAt ? match.scheduledAt|date('d/m/Y') : 'Data n/d' }}
+                    </div>
+                    <div style="color: var(--muted); font-size: 0.76rem;">
+                        {{ match.scheduledAt ? match.scheduledAt|date('H:i') ~ 'h' : '' }}
+                        {% if match.stadium %} &bull; {{ match.stadium.name }}{% endif %}
+                    </div>
+                </div>
+
+                {# Center scoreboard matchup #}
+                <div class="match-center-board">
+                    <div class="match-team-col home">
+                        <span style="font-weight: 700; color: {{ match.homeScore > match.awayScore ? '#ffffff' : 'var(--text-secondary)' }};">
+                            {{ match.homeTeam.name }}
+                        </span>
+                        {{ macros.team_crest(match.homeTeam, 32) }}
+                    </div>
+
+                    <div class="match-score-box">
+                        {% if match.homeScore is not null and match.awayScore is not null %}
+                            <span style="color: {{ match.homeScore >= match.awayScore ? 'var(--accent)' : 'var(--text-secondary)' }};">{{ match.homeScore }}</span>
+                            <span style="color: var(--muted); font-size: 0.85rem;">&times;</span>
+                            <span style="color: {{ match.awayScore >= match.homeScore ? 'var(--accent)' : 'var(--text-secondary)' }};">{{ match.awayScore }}</span>
+                        {% else %}
+                            <span style="color: var(--muted); font-size: 0.8rem; letter-spacing: 0.05em;">VS</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="match-team-col away">
+                        {{ macros.team_crest(match.awayTeam, 32) }}
+                        <span style="font-weight: 700; color: {{ match.awayScore > match.homeScore ? '#ffffff' : 'var(--text-secondary)' }};">
+                            {{ match.awayTeam.name }}
+                        </span>
+                    </div>
+                </div>
+
+                {# Right status #}
+                <div class="match-actions-right">
+                    {{ macros.match_status_badge(match.status) }}
+                    <span style="color: var(--accent); font-size: 0.76rem; font-weight: 700;">
+                        Ver Súmula &rarr;
+                    </span>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}

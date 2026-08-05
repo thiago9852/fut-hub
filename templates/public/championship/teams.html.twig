@@ -1,0 +1,47 @@
+{% extends 'public/base.html.twig' %}
+{% import 'components/_macros.html.twig' as macros %}
+
+{% block title %}Times Participantes — {{ championship.name }} — FutHub{% endblock %}
+
+{% block public_body %}
+{% include 'public/championship/_tabs.html.twig' %}
+
+<div class="section-header">
+    <h3 class="section-title">
+        <span class="section-title-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3z"/></svg>
+        </span>
+        Clubes Participantes
+    </h3>
+    <span style="color: var(--muted); font-size: 0.8rem;">
+        {{ teams|length }} times
+    </span>
+</div>
+
+{% if teams is empty %}
+    <div class="empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <p>Nenhum time inscrito nesta temporada ainda.</p>
+    </div>
+{% else %}
+    <div class="teams-grid">
+        {% for team in teams %}
+            <a href="{{ path('public_team_show', {slug: team.slug}) }}" class="team-card">
+                <div>
+                    {{ macros.team_crest(team, 56) }}
+                </div>
+                <div>
+                    <h3>{{ team.name }}</h3>
+                    <div class="city-tag">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                        {{ team.city ?: 'Januária' }}
+                    </div>
+                </div>
+                <div class="team-card-btn">
+                    Ver Perfil do Clube &rarr;
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}

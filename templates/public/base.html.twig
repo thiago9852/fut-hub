@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/public.css">
+{% block extra_stylesheets %}{% endblock %}
+{% endblock %}
+
+{% block body %}
+<header class="app-header">
+    <div class="header-inner">
+        <a href="{{ path('public_home') }}" class="brand-link">
+            <img src="/uploads/soccer-ball-png.webp" alt="FutHub" class="brand-logo-img">
+            <span>Fut</span>Hub
+        </a>
+        <nav class="main-nav">
+            <a href="{{ path('public_home') }}" class="nav-item {{ app.current_route == 'public_home' ? 'active' : '' }}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                Início
+            </a>
+            <a href="{{ path('public_championship_index') }}" class="nav-item {{ app.current_route starts with 'public_championship' ? 'active' : '' }}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                Campeonatos
+            </a>
+            <a href="{{ path('public_team_index') }}" class="nav-item {{ app.current_route starts with 'public_team' ? 'active' : '' }}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3z"/></svg>
+                Times
+            </a>
+        </nav>
+    </div>
+</header>
+
+<main class="wrap">
+    {% block public_body %}{% endblock %}
+</main>
+
+<footer class="app-footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <img src="/uploads/soccer-ball-png.webp" alt="FutHub" style="width: 26px; height: 26px; object-fit: contain;">
+            <span>Fut<strong style="color: var(--accent);">Hub</strong></span> &mdash; Central de Gestão & Resultados do Futebol
+        </div>
+        <div class="footer-links">
+            <a href="{{ path('public_home') }}">Início</a>
+            <a href="{{ path('public_championship_index') }}">Campeonatos</a>
+            <a href="{{ path('public_team_index') }}">Times</a>
+            <a href="#top" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">Voltar ao Topo &uarr;</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div>
+            &copy; {{ "now"|date("Y") }} FutHub. Todos os direitos reservados.
+        </div>
+        <div>
+            Plataforma Digital de Acompanhamento do Futebol Amador e Regional
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% block extra_javascripts %}{% endblock %}
+{% endblock %}

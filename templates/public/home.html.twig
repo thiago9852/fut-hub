@@ -1,0 +1,327 @@
+{% extends 'public/base.html.twig' %}
+{% import 'components/_macros.html.twig' as macros %}
+
+{% block title %}FutHub — Central de Campeonatos, Jogos e Estatísticas{% endblock %}
+
+{% block public_body %}
+{# Hero Section #}
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polygon points="12 6 15.5 10 14 14.5 10 14.5 8.5 10 12 6"/></svg>
+            FutHub &bull; Futebol Regional
+        </div>
+        <h1>Tabelas, Jogos e <span>Estatísticas</span></h1>
+        <p class="hero-desc">Resultados dos jogos, classificação e dados do futebol organizados em um só lugar.</p>
+        <div class="hero-actions">
+            <a href="{{ path('public_championship_index') }}" class="btn btn-primary">
+                Ver Campeonatos &rarr;
+            </a>
+            {% if championship %}
+                <a href="{{ path('public_championship_standings', {slug: championship.slug}) }}" class="btn btn-secondary">
+                    Tabela de Classificação
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% if not season %}
+    <div class="empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <p>Nenhum campeonato em andamento no momento.</p>
+        <a href="{{ path('public_championship_index') }}" class="btn btn-secondary" style="margin-top: 0.5rem;">Ver lista de campeonatos</a>
+    </div>
+{% else %}
+
+    {# Featured Upcoming Match #}
+    {% if upcomingMatches is not empty %}
+        {% set next = upcomingMatches[0] %}
+        <a href="{{ path('public_match_show', {id: next.id}) }}" class="featured-match-card">
+            <div class="featured-eyebrow">
+                <div class="featured-label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+                    Próximo Jogo &bull; Destaque
+                </div>
+                <div class="featured-championship-name">
+                    {{ championship.name }} &mdash; {{ season.name }}
+                </div>
+            </div>
+
+            <div class="featured-matchup">
+                <div class="matchup-team">
+                    {{ macros.team_crest(next.homeTeam, 54) }}
+                    <span class="matchup-team-name">{{ next.homeTeam.name }}</span>
+                    <span class="badge" style="font-size: 0.68rem;">Mandante</span>
+                </div>
+
+                <div class="matchup-vs-badge">
+                    <div class="vs-circle">VS</div>
+                    <span class="badge badge-cyan" style="font-size: 0.7rem;">Agendado</span>
+                </div>
+
+                <div class="matchup-team">
+                    {{ macros.team_crest(next.awayTeam, 54) }}
+                    <span class="matchup-team-name">{{ next.awayTeam.name }}</span>
+                    <span class="badge" style="font-size: 0.68rem;">Visitante</span>
+                </div>
+            </div>
+
+            <div class="matchup-footer">
+                <div class="matchup-info-pill">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+                    <span>{{ next.scheduledAt ? next.scheduledAt|date('d/m/Y \\à\\s H:i') : 'Data a confirmar' }}</span>
+                </div>
+                {% if next.stadium %}
+                    <div class="matchup-info-pill">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span>{{ next.stadium.name }}</span>
+                    </div>
+                {% endif %}
+                <div class="matchup-info-pill" style="color: var(--accent); font-weight:600;">
+                    Ver Detalhes do Jogo &rarr;
+                </div>
+            </div>
+        </a>
+    {% endif %}
+
+    {# KPI Metrics Strip #}
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-icon teams">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3z"/></svg>
+            </div>
+            <div class="kpi-data">
+                <strong>{{ teamsCount }}</strong>
+                <span>Times Inscritos</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon players">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6"/></svg>
+            </div>
+            <div class="kpi-data">
+                <strong>{{ playersCount }}</strong>
+                <span>Jogadores</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon matches">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+            </div>
+            <div class="kpi-data">
+                <strong>{{ matchesCount }}</strong>
+                <span>Partidas</span>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon goals">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polygon points="12 6 15.5 10 14 14.5 10 14.5 8.5 10 12 6"/></svg>
+            </div>
+            <div class="kpi-data">
+                <strong>{{ goalsCount }}</strong>
+                <span>Gols Marcados</span>
+            </div>
+        </div>
+    </div>
+
+    {# Two Column Grid: Standings Preview & Top Scorers #}
+    <div class="dashboard-grid">
+        {# Standings Preview #}
+        <div class="widget-card">
+            <div>
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-title-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                        </span>
+                        Classificação &bull; {{ championship.name }}
+                    </h3>
+                    <a href="{{ path('public_championship_standings', {slug: championship.slug}) }}" style="color: var(--accent); font-size: 0.8rem; font-weight: 700;">
+                        Ver Tabela &rarr;
+                    </a>
+                </div>
+
+                {% if standings is empty %}
+                    <div class="empty" style="padding: 1.25rem;">Nenhum jogo finalizado ainda.</div>
+                {% else %}
+                    <div style="overflow-x: auto;">
+                        <table class="standings-table-mini">
+                            <thead>
+                                <tr>
+                                    <th style="width: 32px;">#</th>
+                                    <th>Time</th>
+                                    <th style="text-align: center; width: 36px;">P</th>
+                                    <th style="text-align: center; width: 32px;">J</th>
+                                    <th style="text-align: center; width: 32px;">V</th>
+                                    <th style="text-align: center; width: 32px;">SG</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in standings %}
+                                    <tr>
+                                        <td>
+                                            <span class="pos-badge {{ loop.index == 1 ? 'top-1' : (loop.index == 2 ? 'top-2' : (loop.index == 3 ? 'top-3' : (loop.index <= 4 ? 'g4' : ''))) }}">
+                                                {{ loop.index }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{{ path('public_team_show', {slug: row.team.slug}) }}" style="color: #ffffff; text-decoration: none;">
+                                                {{ macros.team_badge(row.team, 20) }}
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center; font-weight: 800; color: #ffffff;" class="numeric">
+                                            {{ row.points }}
+                                        </td>
+                                        <td style="text-align: center; color: var(--muted);" class="numeric">{{ row.played }}</td>
+                                        <td style="text-align: center; color: var(--muted);" class="numeric">{{ row.wins }}</td>
+                                        <td style="text-align: center; font-weight: 700; color: {{ row.goalDifference > 0 ? 'var(--emerald)' : (row.goalDifference < 0 ? 'var(--red)' : 'var(--muted)') }};" class="numeric">
+                                            {{ row.goalDifference > 0 ? '+' ~ row.goalDifference : row.goalDifference }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+            <div style="margin-top: 0.85rem; padding-top: 0.65rem; border-top: 1px solid var(--line); font-size: 0.76rem; color: var(--muted); display:flex; justify-content:space-between;">
+                <span><strong style="color:var(--amber);">1º</strong> Campeão</span>
+                <span>Top 4: Classificados</span>
+            </div>
+        </div>
+
+        {# Top Scorers Preview #}
+        <div class="widget-card">
+            <div>
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-title-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="12 6 15.5 10 14 14.5 10 14.5 8.5 10 12 6"/></svg>
+                        </span>
+                        Artilharia
+                    </h3>
+                    <a href="{{ path('public_championship_top_scorers', {slug: championship.slug}) }}" style="color: var(--accent); font-size: 0.8rem; font-weight: 700;">
+                        Ver Todos &rarr;
+                    </a>
+                </div>
+
+                {% if topScorers is empty %}
+                    <div class="empty" style="padding: 1.25rem;">Nenhum gol registrado.</div>
+                {% else %}
+                    <div class="scorers-list">
+                        {% for stat in topScorers %}
+                            <a href="{{ path('public_player_show', {slug: stat.player.slug}) }}" class="scorer-card-mini">
+                                <div class="scorer-info-left">
+                                    <span class="pos-badge {{ loop.index == 1 ? 'top-1' : (loop.index == 2 ? 'top-2' : 'top-3') }}">
+                                        {{ loop.index }}
+                                    </span>
+                                    {{ macros.player_avatar(stat.player, 28) }}
+                                    <div>
+                                        <div style="font-weight: 700; color: #ffffff; font-size: 0.88rem;">{{ stat.player.name }}</div>
+                                        <div style="font-size: 0.74rem; color: var(--muted);">{{ stat.team.name }}</div>
+                                    </div>
+                                </div>
+                                <div class="scorer-goals-pill">
+                                    <span>{{ stat.count }} {{ stat.count == 1 ? 'gol' : 'gols' }}</span>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div style="margin-top: 0.85rem; text-align: center;">
+                <a href="{{ path('public_championship_top_scorers', {slug: championship.slug}) }}" class="btn btn-secondary" style="width: 100%; font-size: 0.8rem; padding: 0.45rem 0.75rem;">
+                    Ranking Completo
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# Match Center: Recent Results & Upcoming Games #}
+    <div class="dashboard-grid">
+        {# Recent Results #}
+        <div class="widget-card">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <span class="section-title-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3z"/></svg>
+                    </span>
+                    Últimos Resultados
+                </h3>
+                <a href="{{ path('public_championship_matches', {slug: championship.slug}) }}" style="color: var(--accent); font-size: 0.8rem; font-weight: 700;">
+                    Ver Todos &rarr;
+                </a>
+            </div>
+
+            {% if recentResults is empty %}
+                <div class="empty" style="padding: 1.25rem;">Nenhum jogo encerrado ainda.</div>
+            {% else %}
+                <div class="match-cards-grid">
+                    {% for match in recentResults %}
+                        {% set homeWin = match.homeScore > match.awayScore %}
+                        {% set awayWin = match.awayScore > match.homeScore %}
+                        <a href="{{ path('public_match_show', {id: match.id}) }}" class="match-item-card">
+                            <div class="match-item-teams">
+                                <div class="match-item-team-row {{ homeWin ? 'winner' : '' }}">
+                                    <span>{{ macros.team_badge(match.homeTeam, 18) }}</span>
+                                    <span class="score">{{ match.homeScore }}</span>
+                                </div>
+                                <div class="match-item-team-row {{ awayWin ? 'winner' : '' }}">
+                                    <span>{{ macros.team_badge(match.awayTeam, 18) }}</span>
+                                    <span class="score">{{ match.awayScore }}</span>
+                                </div>
+                            </div>
+                            <div class="match-item-footer">
+                                <span>{{ match.scheduledAt ? match.scheduledAt|date('d/m') : 'Data n/d' }}{% if match.stadium %} &bull; {{ match.stadium.name|slice(0, 14) }}{% endif %}</span>
+                                <span class="badge" style="font-size: 0.65rem; padding: 0.15rem 0.35rem;">Fim</span>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        {# Upcoming Games #}
+        <div class="widget-card">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <span class="section-title-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+                    </span>
+                    Próximos Confrontos
+                </h3>
+                <a href="{{ path('public_championship_matches', {slug: championship.slug}) }}" style="color: var(--accent); font-size: 0.8rem; font-weight: 700;">
+                    Calendário &rarr;
+                </a>
+            </div>
+
+            {% if upcomingMatches is empty %}
+                <div class="empty" style="padding: 1.25rem;">Nenhum jogo agendado.</div>
+            {% else %}
+                <div class="match-cards-grid">
+                    {% for match in upcomingMatches %}
+                        <a href="{{ path('public_match_show', {id: match.id}) }}" class="match-item-card">
+                            <div class="match-item-teams">
+                                <div class="match-item-team-row">
+                                    <span>{{ macros.team_badge(match.homeTeam, 18) }}</span>
+                                    <span style="color: var(--muted); font-size: 0.8rem;">-</span>
+                                </div>
+                                <div class="match-item-team-row">
+                                    <span>{{ macros.team_badge(match.awayTeam, 18) }}</span>
+                                    <span style="color: var(--muted); font-size: 0.8rem;">-</span>
+                                </div>
+                            </div>
+                            <div class="match-item-footer">
+                                <span>{{ match.scheduledAt ? match.scheduledAt|date('d/m H:i') : 'A definir' }}{% if match.stadium %} &bull; {{ match.stadium.name|slice(0, 14) }}{% endif %}</span>
+                                <span class="badge badge-cyan" style="font-size: 0.65rem; padding: 0.15rem 0.35rem;">Agendado</span>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+{% endif %}
+{% endblock %}

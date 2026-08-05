@@ -1,0 +1,79 @@
+{% extends 'public/base.html.twig' %}
+{% import 'components/_macros.html.twig' as macros %}
+
+{% block title %}Classificação — {{ championship.name }} — FutHub{% endblock %}
+
+{% block public_body %}
+{% include 'public/championship/_tabs.html.twig' %}
+
+{% if standings is empty %}
+    <div class="empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <p>Nenhum jogo encerrado ainda nesta temporada para computar a classificação.</p>
+    </div>
+{% else %}
+    <div class="table-container">
+        <table class="standings-table">
+            <thead>
+                <tr>
+                    <th style="width: 40px;">Pos</th>
+                    <th class="th-team">Clube / Time</th>
+                    <th style="width: 46px;">PTS</th>
+                    <th style="width: 40px;">J</th>
+                    <th style="width: 40px;">V</th>
+                    <th style="width: 40px;">E</th>
+                    <th style="width: 40px;">D</th>
+                    <th style="width: 40px;">GP</th>
+                    <th style="width: 40px;">GC</th>
+                    <th style="width: 46px;">SG</th>
+                    <th style="width: 50px;">%</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in standings %}
+                    {% set apr = row.played > 0 ? ((row.points / (row.played * 3)) * 100)|round : 0 %}
+                    <tr>
+                        <td>
+                            <span class="pos-number {{ loop.index == 1 ? 'rank-1' : (loop.index == 2 ? 'rank-2' : (loop.index == 3 ? 'rank-3' : (loop.index <= 4 ? 'rank-g4' : ''))) }}">
+                                {{ loop.index }}
+                            </span>
+                        </td>
+                        <td class="td-team">
+                            <a href="{{ path('public_team_show', {slug: row.team.slug}) }}" style="color: #ffffff; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
+                                {{ macros.team_badge(row.team, 22) }}
+                            </a>
+                        </td>
+                        <td class="points-cell">{{ row.points }}</td>
+                        <td class="numeric" style="color: var(--text-secondary);">{{ row.played }}</td>
+                        <td class="numeric" style="color: var(--text-secondary); font-weight: 600;">{{ row.wins }}</td>
+                        <td class="numeric" style="color: var(--muted);">{{ row.draws }}</td>
+                        <td class="numeric" style="color: var(--muted);">{{ row.losses }}</td>
+                        <td class="numeric" style="color: var(--text-secondary);">{{ row.goalsFor }}</td>
+                        <td class="numeric" style="color: var(--muted);">{{ row.goalsAgainst }}</td>
+                        <td class="numeric" style="font-weight: 700; color: {{ row.goalDifference > 0 ? 'var(--emerald)' : (row.goalDifference < 0 ? 'var(--red)' : 'var(--muted)') }};">
+                            {{ row.goalDifference > 0 ? '+' ~ row.goalDifference : row.goalDifference }}
+                        </td>
+                        <td class="numeric" style="color: var(--muted); font-size: 0.8rem;">
+                            {{ apr }}%
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-legend">
+        <div class="legend-item">
+            <div class="legend-dot" style="background: var(--amber);"></div>
+            <span><strong>1º</strong>: Campeão</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background: var(--emerald);"></div>
+            <span><strong>2º ao 4º</strong>: Classificados</span>
+        </div>
+        <div style="margin-left: auto; font-size: 0.76rem; color: var(--muted);">
+            PTS: Pontos &bull; J: Jogos &bull; V: Vitórias &bull; E: Empates &bull; D: Derrotas &bull; GP: Gols Pró &bull; GC: Gols Contra &bull; SG: Saldo de Gols &bull; %: Aproveitamento
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
