@@ -23,6 +23,7 @@ docker-compose.override.yml
 .vscode/
 .claude/
 Thumbs.db
+~$*
 
 # uploads de usuário — a pasta fica versionada (.gitkeep), o conteúdo não
 /public/uploads/*

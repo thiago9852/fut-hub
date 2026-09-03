@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: fut-hub
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: prod
+      - key: APP_DEBUG
+        value: "0"
+      - key: APP_SECRET
+        generateValue: true
+      - key: AUTO_MIGRATE
+        value: "true"
+      - key: DATABASE_URL
+        sync: false

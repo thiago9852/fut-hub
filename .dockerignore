@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env.local
+.env.*.local
+.phpunit.cache
+tests
+vendor
+var/cache/*
+var/log/*
+!var/cache/.gitkeep
+!var/log/.gitkeep
+compose.yaml
+phpunit.dist.xml
+README.md
+docs
+~$*
