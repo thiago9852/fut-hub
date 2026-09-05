@@ -1,4 +1,5 @@
 {% extends 'admin/base.html.twig' %}
+{% import 'components/_macros.html.twig' as macros %}
 
 {% block title %}Eventos — Futebol Local{% endblock %}
 
@@ -28,7 +29,7 @@
                     <td>{{ event.match.homeTeam.name }} × {{ event.match.awayTeam.name }}</td>
                     <td>{{ event.team.name }}</td>
                     <td>{{ event.player.name }}</td>
-                    <td><span class="badge">{{ event.type.value }}</span></td>
+                    <td>{{ macros.match_event_badge(event.type, 16) }}</td>
                     <td>{{ event.minute ?? '—' }}</td>
                     <td class="actions">
                         <a href="{{ path('admin_match_event_edit', {id: event.id}) }}">Editar</a>

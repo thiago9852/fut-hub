@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="redCardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f87171"/>
+      <stop offset="35%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+    <filter id="redCardShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  <!-- Cartão em perspectiva dinâmica de arbitragem -->
+  <g transform="rotate(8 16 16)" filter="url(#redCardShadow)">
+    <rect x="8" y="3.5" width="16" height="25" rx="3" fill="url(#redCardGrad)" stroke="#dc2626" stroke-width="0.8"/>
+    <!-- Reflexo de luz -->
+    <path d="M 8.5 6 L 23.5 6 L 8.5 24 Z" fill="#ffffff" opacity="0.3"/>
+    <rect x="9" y="4.5" width="14" height="23" rx="2" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.35"/>
+  </g>
+</svg>

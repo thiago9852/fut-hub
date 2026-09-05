@@ -90,17 +90,7 @@
                         
                         <div>
                             <div style="font-weight:700; color:#ffffff; font-size:0.88rem; display:flex; align-items:center; gap:0.4rem;">
-                                {% if typeVal == 'GOL' or typeVal == 'GOAL' %}
-                                    <span style="color:var(--accent);">⚽ Gol</span>
-                                {% elseif typeVal == 'CARTAO_AMARELO' or typeVal == 'YELLOW_CARD' %}
-                                    <span style="color:var(--amber);">🟨 Amarelo</span>
-                                {% elseif typeVal == 'CARTAO_VERMELHO' or typeVal == 'RED_CARD' %}
-                                    <span style="color:var(--red);">🟥 Vermelho</span>
-                                {% elseif typeVal == 'SUBSTITUICAO' or typeVal == 'SUBSTITUTION' %}
-                                    <span style="color:var(--cyan);">🔄 Substituição</span>
-                                {% else %}
-                                    <span>{{ typeVal }}</span>
-                                {% endif %}
+                                {{ macros.match_event_badge(event.type, 18) }}
                                 &bull;
                                 <a href="{{ path('public_player_show', {slug: event.player.slug}) }}" style="color:#ffffff;">
                                     {{ event.player.name }}

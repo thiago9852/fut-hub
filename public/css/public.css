@@ -1436,6 +1436,42 @@ tbody tr:hover {
     text-align: center;
 }
 
+.event-icon-img {
+    display: inline-block;
+    vertical-align: middle;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+    transition: transform 0.15s ease;
+}
+
+.event-card:hover .event-icon-img {
+    transform: scale(1.1);
+}
+
+.event-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.86rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.event-badge-goal {
+    color: var(--accent);
+}
+
+.event-badge-yellow {
+    color: #facc15;
+}
+
+.event-badge-red {
+    color: #ef4444;
+}
+
+.event-badge-sub {
+    color: #38bdf8;
+}
+
 .lineups-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;

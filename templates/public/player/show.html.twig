@@ -34,8 +34,8 @@
 {# Player Stats Cards #}
 <div class="player-stat-grid">
     <div class="player-stat-card">
-        <div class="player-stat-icon goals">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="12 6 15.5 10 14 14.5 10 14.5 8.5 10 12 6"/></svg>
+        <div class="player-stat-icon goals" style="display:flex; align-items:center; justify-content:center;">
+            <img src="/icons/ball.svg" alt="Gols" style="width:22px; height:22px; object-fit:contain;">
         </div>
         <div class="player-stat-data">
             <strong>{{ goals }}</strong>
@@ -64,8 +64,8 @@
     </div>
 
     <div class="player-stat-card">
-        <div class="player-stat-icon yellow">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/></svg>
+        <div class="player-stat-icon yellow" style="display:flex; align-items:center; justify-content:center;">
+            <img src="/icons/yellow-card.svg" alt="Cartões Amarelos" style="width:20px; height:20px; object-fit:contain;">
         </div>
         <div class="player-stat-data">
             <strong>{{ yellowCards }}</strong>
@@ -74,8 +74,8 @@
     </div>
 
     <div class="player-stat-card">
-        <div class="player-stat-icon red">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/></svg>
+        <div class="player-stat-icon red" style="display:flex; align-items:center; justify-content:center;">
+            <img src="/icons/red-card.svg" alt="Cartões Vermelhos" style="width:20px; height:20px; object-fit:contain;">
         </div>
         <div class="player-stat-data">
             <strong>{{ redCards }}</strong>
