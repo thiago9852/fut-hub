@@ -52,9 +52,9 @@
     {% set size = size|default(32) %}
     {% set photo = player.photo|default('')|trim %}
     {% if not photo %}
-        {% set photo = '/assets/icons/player-default.svg' %}
+        {% set photo = '/uploads/profile.png' %}
     {% endif %}
-    <img src="{{ photo }}" alt="{{ player.name }}" style="width:{{ size }}px; height:{{ size }}px; border-radius:{{ size > 40 ? '10px' : '6px' }}; object-fit:cover; background:var(--surface-card); border:1px solid var(--line); flex-shrink:0;" onerror="this.onerror=null; this.src='/assets/icons/player-default.svg';">
+    <img src="{{ photo }}" alt="{{ player.name }}" style="width:{{ size }}px; height:{{ size }}px; border-radius:{{ size > 40 ? '10px' : '6px' }}; object-fit:cover; background:var(--surface-card); border:1px solid var(--line); flex-shrink:0;" onerror="this.onerror=null; this.src='/uploads/profile.png';">
 {% endmacro %}
 
 {# Match Status Pill #}
