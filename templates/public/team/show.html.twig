@@ -8,9 +8,14 @@
 <div class="team-hero">
     {{ macros.team_crest(team, 72) }}
     <div class="team-details">
-        <div style="display:flex; align-items:center; gap:0.45rem; margin-bottom:0.2rem;">
+        <div style="display:flex; align-items:center; gap:0.45rem; margin-bottom:0.2rem; flex-wrap:wrap;">
             <span class="badge badge-accent">Clube</span>
             <span class="badge badge-emerald">Ativo</span>
+            {% for c in championships %}
+                <a href="{{ path('public_championship_show', {slug: c.slug}) }}" class="badge badge-cyan" style="text-decoration:none;">
+                    {{ c.name }}
+                </a>
+            {% endfor %}
         </div>
         <h1>{{ team.name }}</h1>
         <div class="team-meta-tags">

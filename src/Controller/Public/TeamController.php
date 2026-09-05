@@ -2,7 +2,9 @@
 
 namespace App\Controller\Public;
 
+use App\Entity\Championship;
 use App\Entity\Team;
+use App\Repository\ChampionshipRepository;
 use App\Repository\GameMatchRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\TeamPlayerRepository;
@@ -20,51 +22,19 @@ class TeamController extends AbstractController
         TeamPlayerRepository $teamPlayerRepository,
         GameMatchRepository $gameMatchRepository,
         SeasonRepository $seasonRepository,
+        ChampionshipRepository $championshipRepository,
     ): Response {
         $teams = $teamRepository->findBy(['status' => 'ATIVO'], ['name' => 'ASC']);
 
         $teamsData = [];
         foreach ($teams as $team) {
-            // Find active seasons/championships for this team
             $rosterCount = $teamPlayerRepository->count(['team' => $team, 'status' => 'ATIVO']);
-
-            // Find championships through team players
-            $tps = $teamPlayerRepository->createQueryBuilder('tp')
-                ->join('tp.season', 's')
-                ->join('s.championship', 'c')
-                ->addSelect('s', 'c')
-                ->where('tp.team = :team')
-                ->andWhere('tp.status = :status')
-                ->setParameter('team', $team)
-                ->setParameter('status', 'ATIVO')
-                ->getQuery()
-                ->getResult();
-
-            $championships = [];
-            foreach ($tps as $tp) {
-                $c = $tp->getSeason()->getChampionship();
-                $championships[$c->getId()] = $c;
-            }
-
-            // Also check matches
-            $matches = $gameMatchRepository->createQueryBuilder('m')
-                ->join('m.season', 's')
-                ->join('s.championship', 'c')
-                ->addSelect('s', 'c')
-                ->where('m.homeTeam = :team OR m.awayTeam = :team')
-                ->setParameter('team', $team)
-                ->getQuery()
-                ->getResult();
-
-            foreach ($matches as $match) {
-                $c = $match->getSeason()->getChampionship();
-                $championships[$c->getId()] = $c;
-            }
+            $championships = $this->getTeamChampionships($team, $championshipRepository, $gameMatchRepository, $teamPlayerRepository);
 
             $teamsData[] = [
                 'team' => $team,
                 'playersCount' => $rosterCount,
-                'championships' => array_values($championships),
+                'championships' => $championships,
             ];
         }
 
@@ -78,7 +48,10 @@ class TeamController extends AbstractController
         #[MapEntity(mapping: ['slug' => 'slug'])] Team $team,
         TeamPlayerRepository $teamPlayerRepository,
         GameMatchRepository $gameMatchRepository,
+        ChampionshipRepository $championshipRepository,
     ): Response {
+        $championships = $this->getTeamChampionships($team, $championshipRepository, $gameMatchRepository, $teamPlayerRepository);
+
         $roster = $teamPlayerRepository->createQueryBuilder('tp')
             ->join('tp.player', 'p')
             ->addSelect('p')
@@ -170,9 +143,66 @@ class TeamController extends AbstractController
 
         return $this->render('public/team/show.html.twig', [
             'team' => $team,
+            'championships' => $championships,
             'roster' => $roster,
             'matches' => $matches,
             'stats' => $stats,
         ]);
+    }
+
+    /**
+     * Retorna todos os campeonatos associados a um time (por organização, partidas ou elenco)
+     *
+     * @return list<Championship>
+     */
+    private function getTeamChampionships(
+        Team $team,
+        ChampionshipRepository $championshipRepository,
+        GameMatchRepository $gameMatchRepository,
+        TeamPlayerRepository $teamPlayerRepository,
+    ): array {
+        $championships = [];
+
+        // 1. Campeonatos ativos da organização do time
+        $orgChampionships = $championshipRepository->findBy([
+            'organization' => $team->getOrganization(),
+            'status' => 'ATIVO',
+        ], ['name' => 'ASC']);
+
+        foreach ($orgChampionships as $c) {
+            $championships[$c->getId()] = $c;
+        }
+
+        // 2. Campeonatos com partidas disputadas ou agendadas
+        $matches = $gameMatchRepository->createQueryBuilder('m')
+            ->join('m.season', 's')
+            ->join('s.championship', 'c')
+            ->addSelect('s', 'c')
+            ->where('m.homeTeam = :team OR m.awayTeam = :team')
+            ->setParameter('team', $team)
+            ->getQuery()
+            ->getResult();
+
+        foreach ($matches as $match) {
+            $c = $match->getSeason()->getChampionship();
+            $championships[$c->getId()] = $c;
+        }
+
+        // 3. Campeonatos com jogadores inscritos no elenco
+        $tps = $teamPlayerRepository->createQueryBuilder('tp')
+            ->join('tp.season', 's')
+            ->join('s.championship', 'c')
+            ->addSelect('s', 'c')
+            ->where('tp.team = :team')
+            ->setParameter('team', $team)
+            ->getQuery()
+            ->getResult();
+
+        foreach ($tps as $tp) {
+            $c = $tp->getSeason()->getChampionship();
+            $championships[$c->getId()] = $c;
+        }
+
+        return array_values($championships);
     }
 }
