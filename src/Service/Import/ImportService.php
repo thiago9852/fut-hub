@@ -76,7 +76,7 @@ class ImportService
                         ->setShortName($this->nullableString($row['short_name'] ?? null))
                         ->setCity($this->nullableString($row['city'] ?? null))
                         ->setStatus((string) ($row['status'] ?? $team->getStatus()));
-                    if ($logo = $this->nullableString($row['logo'] ?? null)) {
+                    if ($logo = $this->normalizeLogo($row['logo'] ?? null)) {
                         $team->setLogo($logo);
                     }
                     $report->recordsUpdated++;
@@ -85,7 +85,7 @@ class ImportService
                     $team->setExternalId($externalId)
                         ->setShortName($this->nullableString($row['short_name'] ?? null))
                         ->setCity($this->nullableString($row['city'] ?? null))
-                        ->setLogo($this->nullableString($row['logo'] ?? null))
+                        ->setLogo($this->normalizeLogo($row['logo'] ?? null))
                         ->setStatus((string) ($row['status'] ?? 'ATIVO'));
                     $this->entityManager->persist($team);
                     $report->recordsCreated++;
@@ -742,6 +742,21 @@ class ImportService
         }
 
         return $slug;
+    }
+
+    private function normalizeLogo(mixed $value): ?string
+    {
+        $logo = $this->nullableString($value);
+        if (!$logo) {
+            return null;
+        }
+        if (str_starts_with($logo, 'http://') || str_starts_with($logo, 'https://') || str_starts_with($logo, '/')) {
+            return $logo;
+        }
+        if (str_starts_with($logo, 'uploads/')) {
+            return '/' . $logo;
+        }
+        return '/uploads/teams/' . $logo;
     }
 
     private function transliterate(string $text): string
