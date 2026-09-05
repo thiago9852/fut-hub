@@ -37,9 +37,10 @@ for var in DATABASE_URL APP_ENV APP_DEBUG APP_SECRET PORT; do
 done
 
 # Permissoes das pastas do Symfony
-mkdir -p /var/www/html/var/cache /var/www/html/var/log /var/www/html/public/uploads
-chown -R www-data:www-data /var/www/html/var /var/www/html/public/uploads
-chmod -R 775 /var/www/html/var /var/www/html/public/uploads
+mkdir -p /var/www/html/var/cache /var/www/html/var/log /var/www/html/public/uploads /var/www/html/public/assets /var/www/html/public/icons
+chown -R www-data:www-data /var/www/html/var /var/www/html/public/uploads /var/www/html/public/assets /var/www/html/public/icons
+chmod -R 775 /var/www/html/var /var/www/html/public/uploads /var/www/html/public/assets /var/www/html/public/icons
+sed -ri -e 's!Alias /icons/!# Alias /icons/!g' /etc/apache2/mods-available/*.conf /etc/apache2/conf-available/*.conf /etc/apache2/mods-enabled/*.conf 2>/dev/null || true
 
 # Sincroniza tabelas no banco 
 if [ -n "$DATABASE_URL" ] && [ "$DATABASE_URL" != "mysql://build:build@127.0.0.1:3306/build" ]; then

@@ -27,6 +27,7 @@ Thumbs.db
 # uploads de usuário — a pasta fica versionada (.gitkeep), o conteúdo não
 /public/uploads/*
 !/public/uploads/*/.gitkeep
+!/public/uploads/profile.png
 !/public/uploads/soccer-ball-png.webp
 !/public/uploads/teams/
 !/public/uploads/teams/**

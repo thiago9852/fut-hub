@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="avatarBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="avatarHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#a3e635" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+  <!-- Fundo Circular com borda sutil -->
+  <circle cx="32" cy="32" r="31" fill="url(#avatarBg)" stroke="#334155" stroke-width="1.5"/>
+  <circle cx="32" cy="32" r="31" fill="url(#avatarHighlight)"/>
+  
+  <!-- Silhueta estilizada de atleta/jogador -->
+  <!-- Cabeça -->
+  <circle cx="32" cy="24" r="9.5" fill="#94a3b8"/>
+  
+  <!-- Corpo / Ombros com corte circular perfeito -->
+  <path d="M 15 54 C 15 42 22 38 32 38 C 42 38 49 42 49 54 C 44 59.5 38.5 62.5 32 62.5 C 25.5 62.5 20 59.5 15 54 Z" fill="#94a3b8"/>
+  
+  <!-- Detalhe da gola esportiva -->
+  <path d="M 28 38.5 L 32 43 L 36 38.5" fill="none" stroke="#0f172a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

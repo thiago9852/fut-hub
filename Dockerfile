@@ -36,7 +36,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Habilita módulos essenciais do Apache
-RUN a2enmod rewrite headers env setenvif
+RUN a2enmod rewrite headers env setenvif \
+    && sed -ri -e 's!Alias /icons/!# Alias /icons/!g' /etc/apache2/mods-available/*.conf /etc/apache2/conf-available/*.conf 2>/dev/null || true
 
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
@@ -75,9 +76,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Otimiza
 RUN composer dump-autoload --optimize --classmap-authoritative --no-dev && \
     php bin/console assets:install public --no-interaction && \
-    mkdir -p var/cache var/log public/uploads && \
-    chown -R www-data:www-data var public/uploads && \
-    chmod -R 775 var public/uploads
+    mkdir -p var/cache var/log public/uploads public/assets public/icons && \
+    chown -R www-data:www-data var public/uploads public/assets public/icons && \
+    chmod -R 775 var public/uploads public/assets public/icons
 
 # Script de inicialização
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint

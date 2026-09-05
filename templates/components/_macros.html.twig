@@ -50,7 +50,11 @@
 {# Player Avatar #}
 {% macro player_avatar(player, size) %}
     {% set size = size|default(32) %}
-    <img src="{{ player.photo ?: '/uploads/profile.png' }}" alt="{{ player.name }}" style="width:{{ size }}px; height:{{ size }}px; border-radius:{{ size > 40 ? '10px' : '6px' }}; object-fit:cover; background:var(--surface-card); border:1px solid var(--line); flex-shrink:0;">
+    {% set photo = player.photo|default('')|trim %}
+    {% if not photo %}
+        {% set photo = '/assets/icons/player-default.svg' %}
+    {% endif %}
+    <img src="{{ photo }}" alt="{{ player.name }}" style="width:{{ size }}px; height:{{ size }}px; border-radius:{{ size > 40 ? '10px' : '6px' }}; object-fit:cover; background:var(--surface-card); border:1px solid var(--line); flex-shrink:0;" onerror="this.onerror=null; this.src='/assets/icons/player-default.svg';">
 {% endmacro %}
 
 {# Match Status Pill #}
@@ -72,13 +76,13 @@
     {% set size = size|default(18) %}
     {% set val = type.value|default(type)|upper %}
     {% if val in ['GOL', 'GOAL', 'OWN_GOAL', 'ASSIST'] %}
-        <img src="/icons/ball.svg" alt="Bola de Futebol" width="{{ size }}" height="{{ size }}" class="event-icon-img" style="width:{{ size }}px; height:{{ size }}px; object-fit:contain; vertical-align:middle; flex-shrink:0;">
+        <img src="/assets/icons/ball.svg" alt="Bola de Futebol" width="{{ size }}" height="{{ size }}" class="event-icon-img" style="width:{{ size }}px; height:{{ size }}px; object-fit:contain; vertical-align:middle; flex-shrink:0;" onerror="this.onerror=null; this.src='/icons/ball.svg';">
     {% elseif val in ['CARTAO_AMARELO', 'YELLOW_CARD'] %}
-        <img src="/icons/yellow-card.svg" alt="Cartão Amarelo" width="{{ size }}" height="{{ size }}" class="event-icon-img" style="width:{{ size }}px; height:{{ size }}px; object-fit:contain; vertical-align:middle; flex-shrink:0;">
+        <img src="/assets/icons/yellow-card.svg" alt="Cartão Amarelo" width="{{ size }}" height="{{ size }}" class="event-icon-img" style="width:{{ size }}px; height:{{ size }}px; object-fit:contain; vertical-align:middle; flex-shrink:0;" onerror="this.onerror=null; this.src='/icons/yellow-card.svg';">
     {% elseif val in ['CARTAO_VERMELHO', 'RED_CARD'] %}
-        <img src="/icons/red-card.svg" alt="Cartão Vermelho" width="{{ size }}" height="{{ size }}" class="event-icon-img" style="width:{{ size }}px; height:{{ size }}px; object-fit:contain; vertical-align:middle; flex-shrink:0;">
+        <img src="/assets/icons/red-card.svg" alt="Cartão Vermelho" width="{{ size }}" height="{{ size }}" class="event-icon-img" style="width:{{ size }}px; height:{{ size }}px; object-fit:contain; vertical-align:middle; flex-shrink:0;" onerror="this.onerror=null; this.src='/icons/red-card.svg';">
     {% elseif val in ['SUBSTITUICAO', 'SUBSTITUTION', 'SUBSTITUTION_IN', 'SUBSTITUTION_OUT'] %}
-        <img src="/icons/substitution.svg" alt="Substituição" width="{{ size }}" height="{{ size }}" class="event-icon-img" style="width:{{ size }}px; height:{{ size }}px; object-fit:contain; vertical-align:middle; flex-shrink:0;">
+        <img src="/assets/icons/substitution.svg" alt="Substituição" width="{{ size }}" height="{{ size }}" class="event-icon-img" style="width:{{ size }}px; height:{{ size }}px; object-fit:contain; vertical-align:middle; flex-shrink:0;" onerror="this.onerror=null; this.src='/icons/substitution.svg';">
     {% else %}
         <span style="font-size:{{ size * 0.8 }}px; line-height:1;">•</span>
     {% endif %}
