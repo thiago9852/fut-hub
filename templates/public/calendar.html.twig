@@ -1,0 +1,94 @@
+{% extends 'public/base.html.twig' %}
+{% import 'components/_macros.html.twig' as macros %}
+
+{% block title %}Calendário de Jogos — FutHub{% endblock %}
+
+{% block public_body %}
+<div style="display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+    <div>
+        <h1 style="font-size: 1.85rem; color: #ffffff;">Calendário de Jogos</h1>
+        <p class="subtitle" style="margin-bottom: 0;">Todas as partidas agendadas e disputadas em todos os campeonatos ativos.</p>
+    </div>
+    <span style="color: var(--muted); font-size: 0.85rem; font-weight: 600;">
+        {{ dateOptions|length }} {{ dateOptions|length == 1 ? 'data' : 'datas' }} com jogos
+    </span>
+</div>
+
+{% if dateOptions is empty %}
+    <div class="empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+        <p>Nenhum jogo com data definida até o momento.</p>
+    </div>
+{% else %}
+    <div class="calendar-date-strip">
+        {% for opt in dateOptions %}
+            <a href="{{ path('public_calendar', {data: opt.key}) }}"
+               class="calendar-date-pill {{ opt.key == selectedDate ? 'active' : '' }}">
+                <span class="calendar-date-weekday">{{ opt.weekday }}</span>
+                <span class="calendar-date-day">{{ opt.day }}</span>
+                <span class="calendar-date-month">{{ opt.month }}</span>
+                {% if opt.isToday %}<span class="calendar-date-today-dot"></span>{% endif %}
+            </a>
+        {% endfor %}
+    </div>
+
+    {% if selectedDate and selectedDateOption %}
+        <div class="calendar-selected-heading">
+            <h4>
+                {{ selectedDateOption.weekday }}, {{ selectedDateOption.day }} de {{ selectedDateOption.month }}
+                {% if selectedDateOption.isToday %}<span class="badge badge-emerald" style="margin-left: 0.5rem;">Hoje</span>{% endif %}
+            </h4>
+            <span style="color: var(--muted); font-size: 0.8rem;">
+                {{ matchesForSelectedDate|length }} {{ matchesForSelectedDate|length == 1 ? 'jogo' : 'jogos' }}
+            </span>
+        </div>
+
+        <div class="filter-pills">
+            <a href="{{ path('public_calendar', {data: selectedDate, status: 'all'}) }}" class="filter-pill {{ statusFilter == 'all' ? 'active' : '' }}">Todos</a>
+            <a href="{{ path('public_calendar', {data: selectedDate, status: 'live'}) }}" class="filter-pill {{ statusFilter == 'live' ? 'active' : '' }}">Ao vivo</a>
+            <a href="{{ path('public_calendar', {data: selectedDate, status: 'finished'}) }}" class="filter-pill {{ statusFilter == 'finished' ? 'active' : '' }}">Encerrados</a>
+        </div>
+
+        {% if matchesForSelectedDate is empty %}
+            <div class="empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                <p>Nenhum jogo encontrado para este filtro nesta data.</p>
+            </div>
+        {% else %}
+            <div class="calendar-match-grid">
+                {% for match in matchesForSelectedDate %}
+                    <a href="{{ path('public_match_show', {id: match.id}) }}" class="calendar-match-card">
+                        <div class="calendar-match-league">
+                            <span class="calendar-match-league-name">{{ match.season.championship.name }}</span>
+                            <span class="calendar-match-round">{{ match.season.name }} &bull; Rodada {{ match.round.number }}</span>
+                        </div>
+
+                        <div class="calendar-match-teams">
+                            <div class="calendar-match-team">
+                                <span class="calendar-match-team-name">
+                                    {{ macros.team_crest(match.homeTeam, 20) }}
+                                    {{ match.homeTeam.name }}
+                                </span>
+                                {% if match.homeScore is not null %}<span class="calendar-match-team-score">{{ match.homeScore }}</span>{% endif %}
+                            </div>
+                            <div class="calendar-match-team">
+                                <span class="calendar-match-team-name">
+                                    {{ macros.team_crest(match.awayTeam, 20) }}
+                                    {{ match.awayTeam.name }}
+                                </span>
+                                {% if match.awayScore is not null %}<span class="calendar-match-team-score">{{ match.awayScore }}</span>{% endif %}
+                            </div>
+                        </div>
+
+                        <div class="calendar-match-footer">
+                            {{ selectedDateOption.isToday ? 'Hoje' : selectedDateOption.day ~ '/' ~ selectedDateOption.month }}
+                            &bull;
+                            {{ match.scheduledAt ? match.scheduledAt|date('H:i') : '--:--' }}
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endif %}
+{% endif %}
+{% endblock %}

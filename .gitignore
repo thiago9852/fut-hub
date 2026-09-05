@@ -21,7 +21,6 @@ docker-compose.override.yml
 
 .idea/
 .vscode/
-.claude/
 Thumbs.db
 ~$*
 

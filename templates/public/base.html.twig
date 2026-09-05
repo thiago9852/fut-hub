@@ -24,6 +24,10 @@
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
                 Campeonatos
             </a>
+            <a href="{{ path('public_calendar') }}" class="nav-item {{ app.current_route starts with 'public_calendar' ? 'active' : '' }}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/><circle cx="8" cy="15" r="1"/><circle cx="12" cy="15" r="1"/><circle cx="16" cy="15" r="1"/></svg>
+                Partidas
+            </a>
             <a href="{{ path('public_team_index') }}" class="nav-item {{ app.current_route starts with 'public_team' ? 'active' : '' }}">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3z"/></svg>
                 Times
@@ -40,11 +44,12 @@
     <div class="footer-inner">
         <div class="footer-brand">
             <img src="/uploads/soccer-ball-png.webp" alt="FutHub" style="width: 26px; height: 26px; object-fit: contain;">
-            <span>Fut<strong style="color: var(--accent);">Hub</strong></span> &mdash; Central de Gestão & Resultados do Futebol
+            <span>Fut<strong style="color: var(--accent);"> Hub</strong></span> &mdash; Central de Gestão & Resultados do Futebol
         </div>
         <div class="footer-links">
             <a href="{{ path('public_home') }}">Início</a>
             <a href="{{ path('public_championship_index') }}">Campeonatos</a>
+            <a href="{{ path('public_calendar') }}">Partidas</a>
             <a href="{{ path('public_team_index') }}">Times</a>
             <a href="#top" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">Voltar ao Topo &uarr;</a>
         </div>
@@ -54,7 +59,7 @@
             &copy; {{ "now"|date("Y") }} FutHub. Todos os direitos reservados.
         </div>
         <div>
-            Plataforma Digital de Acompanhamento do Futebol Amador e Regional
+            Plataforma Digital de Acompanhamento do Futebol Local.
         </div>
     </div>
 </footer>

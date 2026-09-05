@@ -1125,6 +1125,209 @@ tbody tr:hover {
     border: 1px solid var(--line);
 }
 
+.calendar-date-strip {
+    display: flex;
+    gap: 0.6rem;
+    overflow-x: auto;
+    padding: 0.25rem 0.1rem 1rem;
+    margin-bottom: 0.5rem;
+    scrollbar-width: thin;
+}
+
+.calendar-date-pill {
+    position: relative;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.05rem;
+    width: 44px;
+    padding: 0.4rem 0.3rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    color: var(--text-secondary);
+    transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+
+.calendar-date-pill:hover {
+    border-color: var(--line-strong);
+    background: var(--surface-card);
+    color: var(--text);
+}
+
+.calendar-date-pill.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #090d14;
+}
+
+.calendar-date-weekday {
+    font-size: 0.56rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    opacity: 0.8;
+}
+
+.calendar-date-day {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.calendar-date-month {
+    font-size: 0.56rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    opacity: 0.8;
+}
+
+.calendar-date-today-dot {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--emerald);
+}
+
+.calendar-date-pill.active .calendar-date-today-dot {
+    background: #090d14;
+}
+
+.calendar-selected-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+}
+
+.calendar-selected-heading h4 {
+    font-size: 1.05rem;
+    color: #ffffff;
+    text-transform: capitalize;
+}
+
+.filter-pills {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.filter-pill {
+    padding: 0.4rem 0.95rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+
+.filter-pill:hover {
+    border-color: var(--line-strong);
+    color: var(--text);
+}
+
+.filter-pill.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #090d14;
+}
+
+.calendar-match-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.75rem;
+}
+
+.calendar-match-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 0.85rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color .15s ease, background .15s ease;
+}
+
+.calendar-match-card:hover {
+    border-color: var(--line-strong);
+    background: var(--surface-card);
+}
+
+.calendar-match-league {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.calendar-match-league-name {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.calendar-match-round {
+    font-size: 0.68rem;
+    color: var(--muted);
+}
+
+.calendar-match-teams {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.calendar-match-team {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.calendar-match-team-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.calendar-match-team-score {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    min-width: 18px;
+    text-align: right;
+}
+
+.calendar-match-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.3rem;
+    font-size: 0.74rem;
+    color: var(--muted);
+    font-weight: 600;
+    border-top: 1px solid var(--line);
+    padding-top: 0.55rem;
+}
+
 .match-list-grid {
     display: flex;
     flex-direction: column;

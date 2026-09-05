@@ -49,12 +49,7 @@
 {# Player Avatar #}
 {% macro player_avatar(player, size) %}
     {% set size = size|default(32) %}
-    {% set fontSize = (size * 0.42)|round %}
-    {% if player.photo %}
-        <img src="{{ player.photo }}" alt="{{ player.name }}" style="width:{{ size }}px; height:{{ size }}px; border-radius:{{ size > 40 ? '10px' : '6px' }}; object-fit:cover; background:var(--surface-card); border:1px solid var(--line); flex-shrink:0;">
-    {% else %}
-        <span style="display:inline-flex; align-items:center; justify-content:center; width:{{ size }}px; height:{{ size }}px; border-radius:{{ size > 40 ? '10px' : '6px' }}; background:var(--surface-card); border:1px solid var(--line); color:var(--text-secondary); font-size:{{ fontSize }}px; font-weight:700; flex-shrink:0;">{{ player.name|slice(0, 1)|upper }}</span>
-    {% endif %}
+    <img src="{{ player.photo ?: '/uploads/profile.png' }}" alt="{{ player.name }}" style="width:{{ size }}px; height:{{ size }}px; border-radius:{{ size > 40 ? '10px' : '6px' }}; object-fit:cover; background:var(--surface-card); border:1px solid var(--line); flex-shrink:0;">
 {% endmacro %}
 
 {# Match Status Pill #}
